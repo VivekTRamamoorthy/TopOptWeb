@@ -40,8 +40,8 @@ var size=function(a,dim=0){ // mimics matlabs size function size([10,10]) => [1,
     if(a.hasOwnProperty("stride")){return a.size;} // check for ndarray
     if(a instanceof Array){
         if(dim==0){
-            if(a[0] instanceof Array){return [a[0].length,a.length];}
-            return [1,a.length];
+            if(a[0] instanceof Array){return [a.length,a[0].length];}
+            return [a.length,1];
         }
         if(dim==1){return a.length;}
         if(dim==2){return a[0].length;}
@@ -135,9 +135,16 @@ var concatCols=function(A,B){
 
 
 var transpose=function(A){
-    B=new Array(A[0].length).fill(new Array(A.length).fill().map(x=>0));
-    for(row=0;row<A[0].length;row++){
-        B[row]=A.map((Arow)=> Arow[row]);
+    if(typeof(A[0])=="number"){
+        B=A.map(x=>[x]);
+        return B;
+    }
+    B=new Array(A[0].length).fill().map(x=>new Array(A.length).fill().map(x=>0));
+    for(let row=0;row<A[0].length;row++){
+        for(let col=0;col<A.length;col++){
+            // console.log({row,col})
+        B[row][col]=A[col][row];
+        }
     }
     return B;
 }
@@ -147,11 +154,11 @@ var ones=function(a,b=0){
     let rows,cols;
     if(typeof(a)== "object"){rows=a[0]; cols=a[1]; }; // if a is an array and a(2) is not 1
     if(typeof(a)== "number"){rows=a;cols=b;};  
-    return  new Array(rows).fill(new Array(cols).fill().map(x=>1));
+    return  new Array(rows).fill().map(x=>new Array(cols).fill().map(x=>1));
 }
 
 var eye=function(a){
-    let res = new Array(a).fill(new Array(a).fill(0))  ;
+    let res = new Array(a).fill().map(x=>new Array(a).fill(0))  ;
     return res.map((row,i)=>row.map((x,j)=> (i==j)+0)); // the +0 is  to make true =1 and false=0
 
 }
@@ -161,7 +168,7 @@ var zeros=function(a,b=0){
     let rows,cols;
     if(a instanceof Array){rows=a[0]; cols=a[1]; }; // if a is an array and a(2) is not 1
     if(typeof(a)== "number"){rows=a;cols=b;};
-    return  new Array(rows).fill(new Array(cols).fill().map(x=>0));
+    return  new Array(rows).fill().map(x=>new Array(cols).fill().map(x=>0));
     
 }
 
@@ -178,13 +185,15 @@ var display=function(a){
         if(typeof(a[0])=="number"){ // a is a number array
             let displayText="\n [";
             for(let i=0;i<a.length;i++){displayText=displayText.concat("  "+ a[i]+"  ")}
-            console.log(displayText+" ]");
+            displayText=displayText.concat(" ]");
+            console.log(displayText);
             return 0;
         }
         if(a[0] instanceof cx){ // a is a complex array
             let displayText="\n [ ";
             for(let i=0;i<a.length;i++){displayText=displayText.concat("  "+a[i].re+" + 1i*"+a[i].im+"   ")}
-            console.log(displayText+" ]");
+            displayText=displayText.concat(" ]")
+            console.log(displayText);
             return 0;
         }        
         if(a[0] instanceof Array){ // a is a matrix
@@ -249,11 +258,13 @@ var get=function(mat,rrange,crange){
     if (rrange==':'){         
         rrange=range(1,mat.length);
     }
-    rrange=rrange.map((x,i)=>{if(x<1){return mat.length-x;} return x});
+    if(typeof(rrange)=="number"){   rrange=[rrange];   }
+    rrange=rrange.map((x,i)=>{if(x<1){return mat.length+x;} return x});
     if (crange==':'){
         crange=range(1,mat[0].length);
     }
-    crange=crange.map((x,i)=>{if(x<1){return mat[0].length-x;} return x});
+    if(typeof(crange)=="number"){   crange=[crange];   }
+    crange=crange.map((x,i)=>{if(x<1){return mat[0].length+x;} return x});
     
     let res=[];
     
@@ -278,7 +289,7 @@ var get=function(mat,rrange,crange){
 var repmat= function(mat,rows,cols){
     let mrows=mat.length;
     let mcols=mat[0].length;
-    let res = new Array(mrows*rows).fill(  new Array(mcols*cols).fill().map(x=>0)  );
+    let res = new Array(mrows*rows).fill().map(x=>  new Array(mcols*cols).fill().map(x=>0)  );
     res= res.map((resrow,row)=>{ return resrow.map((reselem,col) =>{return mat[row%mrows][col%mcols]}) } );
     
     return res;
@@ -343,6 +354,25 @@ var unique=function(C){
     return UniqueC;
 }
 
+var sparse=function(iK,jK,sK,m,n){
+    let K=zeros(m,n);
+    for (let i=0;i<iK.length;i++){
+        K[iK[i]][jK[i]]=sK[i][0];
+    }
+    return K;
+
+}
+
+var colon=function(K){
+    let p=0,row=0,col=0;
+    let Kcolon=zeros(K.length*K[0].length,1);
+    for (let i=0;i<Kcolon.length;i++){
+    row=i%K.length;
+    col=Math.floor(i/K[0].length);
+    Kcolon[i]=[K[row][col]];
+    }
+    return Kcolon;
+}
 
 
 
@@ -541,15 +571,14 @@ var mul=function(a,b){ // universal add function, not fully supported for ndarra
             if(typeof(b)=="number"){return a.map(Arow=>Arow.map(Aij=>Aij*b));} // b is a number
             if(b instanceof cx){return a.map(Arow=>Arow.map(Aij=>Aij.mul(b)))} // b is complex
             if(b instanceof Array && b[0] instanceof Array){ // b is a matrix
-                let c=new Array(a.length).fill(new Array(b[0].length).fill().map(x=>0));
+                let c=new Array(a.length).fill().map(x=>new Array(b[0].length).fill().map(x=>0));
                 if(a[0].length==b.length){ // checking dimensions
                     
                     for(let row=0;row<a.length;row++){
                         for(let col=0;col<b[0].length;col++){
                             presum=a[row].map((arowcol,i)=>arowcol*b[i][col]);
-                            display(presum)
+                            // display(presum)
                             c[row][col]=presum.reduce((a,b)=>a+b);
-                            console.log({row,col,c})
                         }
                     }
                     return c; // matrix multiplication code
@@ -657,6 +686,16 @@ var pow=function(a,b){ // universal add function, not fully supported for ndarra
             if(b instanceof Array) {return a.map((x,i)=>x.pow(b[i])); } // b is  array
             return a.map(x=>x.pow(b)); //  b is number or complex
         }        
+        if(a[0] instanceof Array){ // a is a matrix
+            if(typeof(b)=="number"){return a.map(Arow=>Arow.map(Aij=>Aij**b));} // b is a number
+            if(b instanceof cx){return a.map(Arow=>Arow.map(Aij=>(new cx(Aij,0)).pow(b)))} // b is complex
+            if(b instanceof Array && b[0] instanceof Array){ // b is a matrix
+                if(a.length==b.length & a[0].length==b[0].length){ // checking dimensions
+                    return a.map((arow,row)=>arow.map((arowcol,col)=>arow[col]**b[row][col]))// a and b are matrices then performs dot pow
+                }
+                else{ console.error("Matrix dimensions must agree"); return [] }
+            }
+        }
     }
     if(a.hasOwnProperty("stride")){ // a is an ndarray
         if(typeof(b)=="number"){return new ndarray( a.data.map(x=>x**b) ); } // b is number

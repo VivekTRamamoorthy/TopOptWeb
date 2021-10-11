@@ -36,8 +36,9 @@ const B12 = [[ 2, -3, 4, -9],[ -3, 2, 9, -2],[ 4, 9 ,2 ,3],[ -9, -2, 3, 2]];
 
 // KE = 1/(1-nu^2)/24*([A11 A12;A12' A11]+nu*[B11 B12;B12' B11]);
 var temp1 = concatCols(concatRows(A11,A12),concatRows(transpose(A12),A11));
+var temp2= concatCols(concatRows(B11,B12),concatRows(transpose(B12),B11));
 
-KE=mul(1/(1-nu**2)/24,temp1);
+KE=mul(1/(1-nu**2)/24,  add(temp1,mul(temp2,nu))  );
 
 console.log("I am here")
 
@@ -61,13 +62,9 @@ let edofMat = add(temp1,temp2)
 
 let iK= reshape(transpose(kron(edofMat,ones(8,1))) , 64*nelx*nely,1)
 
-display(size(iK))
-
 // jK = reshape(kron(edofMat,ones(1,8))',64*nelx*nely,1);
 
 let jK= reshape(transpose(kron(edofMat,ones(1,8))) , 64*nelx*nely,1)
-
-display(size(jK))
 
 // % DEFINE LOADS AND SUPPORTS (HALF MBB-BEAM)
 
@@ -125,10 +122,10 @@ let Hs=ones(nelx*nely,1);
 // x = repmat(volfrac,nely,nelx);
 
 x=repmat([[volfrac]],nely,nelx); // the double square bracket is because repmat first input must be a matrix
-display(x)
+
 
 // xPhys = x;
-let xPhy=x;
+let xPhys=x;
 // loop = 0;
 let loop=0;
 // change = 1;
@@ -139,17 +136,35 @@ let change=1;
 
 // while change > 0.01
 
-while(change>0.01){
+for(loop=0;loop<10;loop++){
 //     loop = loop + 1;
-loop ++;
+
 //     %% FE-ANALYSIS
-//     sK = reshape(KE(:)*(Emin+xPhys(:)'.^penal*(E0-Emin)),64*nelx*nely,1);
-sK=reshape(KE)
+//     sK = reshape(KE(:)*(Emin+xPhys(:)'.^penal*(E0-Emin)),64*nelx*nely,1); // this is to input in sparse
+
+temp1=add(mul(pow( transpose(colon(xPhys)), penal),E0-Emin),Emin);
+// display(mul(colon(KE),temp1))
+sK=reshape( mul(colon(KE),temp1), 64*nelx*nely,1);
+
 //     K = sparse(iK,jK,sK); K = (K+K')/2;
+
+K = sparse(iK,jK,sK,alldofs.length,alldofs.length);
+display(size(K))
 //     U(freedofs) = K(freedofs,freedofs)\F(freedofs);
+Kfree=get(K,freedofs,freedofs);
+Ffree=get(F,freedofs,[1]);
+Ufree=mul(math.inv(Kfree),Ffree);
+
+
 //     %% OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS
-//     ce = reshape(sum((U(edofMat)*KE).*U(edofMat),2),nely,nelx);
+
+//     ce = reshape(sum(  (U(edofMat)*KE).*U(edofMat),2  )    ,nely,nelx);
+
+// ce = reshape(sum(( mul( get(U,edofMat,[1]) , KE )      )
+
 //     c = sum(sum((Emin+xPhys.^penal*(E0-Emin)).*ce))
+
+
 //     dc = -penal*(E0-Emin)*xPhys.^(penal-1).*ce;
 //     dv = ones(nely,nelx);
 //     %% FILTERING/MODIFICATION OF SENSITIVITIES
@@ -176,6 +191,7 @@ sK=reshape(KE)
 //     %% PRINT RESULTS
 //     fprintf(' It.:%5i Obj.:%11.4f Vol.:%7.3f ch.:%7.3f\n',loop,c, ...
 //         mean(xPhys(:)),change);
+console.log('It: ', loop)
 //     %% PLOT DENSITIES
 //     colormap(gray); imagesc(1-xPhys); caxis([0 1]); axis equal; axis off; drawnow;
 // end
