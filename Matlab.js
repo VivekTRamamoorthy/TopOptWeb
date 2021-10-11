@@ -308,8 +308,7 @@ var concatRows=function(A,B){
     var repmat= function(mat,rows,cols){
         let mrows=mat.length;
         let mcols=mat[0].length;
-        let res=[];
-        res=new Array(mrows*rows).fill(  new Array(mcols*cols).fill(0)  );
+        let res = new Array(mrows*rows).fill(  new Array(mcols*cols).fill(0)  );
         res= res.map((resrow,row)=>{ return resrow.map((reselem,col) =>{return mat[row%mrows][col%mcols]}) } );
 
         return res;
@@ -318,8 +317,26 @@ var concatRows=function(A,B){
     }
 
 
-    var kron= function(mat1,Y){
-        
+    var kron= function(X,Y){ // Kronecker tensor product
+        let xrows=X.length;
+        let xcols=X[0].length;
+
+        // first row
+        let resrow=mul(X[0][0],Y);
+        for(let col=1; col<xcols; col++){
+            resrow=concatRows(resrow,mul(X[0][col],Y));
+        }
+        let res=resrow;
+        // remaining rows
+        for(let row=1;row<xrows;row++){
+            let resrow=mul(X[row][0],Y); // first col
+            for(let col=1; col<xcols; col++){ // remaining cols
+                resrow=concatRows(resrow,mul(X[row][col],Y));
+            }
+            res=concatCols(res,resrow);
+        }
+
+        return res;
     }
     
     

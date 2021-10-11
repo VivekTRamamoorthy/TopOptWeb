@@ -1,6 +1,7 @@
 // PLOTTING A SAMPLE MESH
 
 // SAMPLE SHAPE
+tic()
 var x=zeros(10,10)
 image(x);
 
@@ -53,11 +54,16 @@ temp1 = repmat(edofVec,1,8);
 temp2=repmat([[0, 1, 2*nely+2, 2*nely+3, 2*nely+0,2*nely+1, -2, -1]],nelx*nely,1);
 let edofMat = add(temp1,temp2)
 
-display(edofMat)
+// display(edofMat)
+
+A=[[1,2,3],[2,3,4]];
+Y=[[1],[1],[1]];
+
+display(kron(A,Y))
 
 // iK = reshape(kron(edofMat,ones(8,1))',64*nelx*nely,1);
 
-let iK = reshape( transpose( kron(edofMat,ones(8,1)) ),64*nelx*nely,1);
+// let iK = reshape( transpose( kron(edofMat,ones(8,1)) ),64*nelx*nely,1);
 
 // jK = reshape(kron(edofMat,ones(1,8))',64*nelx*nely,1);
 // % DEFINE LOADS AND SUPPORTS (HALF MBB-BEAM)
@@ -246,7 +252,7 @@ let iK = reshape( transpose( kron(edofMat,ones(8,1)) ),64*nelx*nely,1);
 
 
 
-
+toc()
 
 
 
