@@ -31,16 +31,18 @@ const A12 = [[-6, -3, 0, 3],[ -3, -6, -3, -6],[ 0, -3, -6, 3],[ 3 ,-6 ,3 ,-6]];
 const B11 = [[-4, 3, -2, 9],[ 3, -4, -9, 4],[ -2, -9, -4, -3],[ 9, 4, -3 ,-4]];
 const B12 = [[ 2, -3, 4, -9],[ -3, 2, 9, -2],[ 4, 9 ,2 ,3],[ -9, -2, 3, 2]];
 
+
+
+// KE = 1/(1-nu^2)/24*([A11 A12;A12' A11]+nu*[B11 B12;B12' B11]);
+var temp1 = concatCols(concatRows(A11,A12),concatRows(transpose(A12),A11));
+
+KE=mul(1/(1-nu**2)/24,temp1);
+display(KE)
 console.log("I am here")
 
-const A=[[1,2],[3,4]]
-
-display(mul(A,A))
-// KE = 1/(1-nu^2)/24*([A11 A12;A12' A11]+nu*[B11 B12;B12' B11]);
-
-//KE = 1/(1-nu**2)/24*([A11 A12;A12' A11]+nu*[B11 B12;B12' B11]);
-
 // nodenrs = reshape(1:(1+nelx)*(1+nely),1+nely,1+nelx);
+
+let nodenrs = reshape()
 // edofVec = reshape(2*nodenrs(1:end-1,1:end-1)+1,nelx*nely,1);
 // edofMat = repmat(edofVec,1,8)+repmat([0 1 2*nely+[2 3 0 1] -2 -1],nelx*nely,1);
 // iK = reshape(kron(edofMat,ones(8,1))',64*nelx*nely,1);

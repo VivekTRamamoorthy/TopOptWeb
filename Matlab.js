@@ -4,6 +4,8 @@
 // Use equivalent typed code for speed.
 // BASIC MATLAB  FUNCTIONS
 
+const { copyFile } = require("fs");
+
 var ndarrayToggle=0; // doesn't use ndarray functions for basic operations such as zeros, ones etc
 var complexToggle=0; // doesn't use complex interpretations
 
@@ -135,6 +137,7 @@ var zeros=function(a,b=1){
 
 var concatRows=function(A,B){
     if(A.length==B.length){
+        let C=[];
         for(let row=0;row<A.length;row++){
             C[row]=A[row].concat(B[row]);
         }
@@ -146,14 +149,14 @@ var concatRows=function(A,B){
     }
     
     var concatCols=function(A,B){
+
         if(A[0].length==B[0].length){
-            C=A.concat(B);
+
+            let C=A.concat(B);
+            return C;
         }
-        
-        else{
-            console.error("Dimensions of arrays being horizontally concatenated are not equal")
-            return [];
-        }
+        console.error("Dimensions of arrays being horizontally concatenated are not equal")
+        return [];
     }
     
     
@@ -196,20 +199,24 @@ var concatRows=function(A,B){
     var display=function(a){
         if(typeof(a)=="number"){ // a is number
             console.log(a)
+            return 0;
         }
         if(a instanceof cx){ // a is complex
-            console.log("ans:\n"+a.re+" + 1i*"+a.im)
+            console.log("ans:\n"+a.re+" + 1i*"+a.im); 
+            return 0;
         }
         if(a instanceof Array){  // a is an array
             if(typeof(a[0])=="number"){ // a is a number array
                 let displayText="\n [";
                 for(let i=0;i<a.length;i++){displayText=displayText.concat("  "+ a[i]+"  ")}
-                console.log(displayText+" ]")
+                console.log(displayText+" ]");
+                return 0;
             }
             if(a[0] instanceof cx){ // a is a complex array
                 let displayText="\n [ ";
                 for(let i=0;i<a.length;i++){displayText=displayText.concat("  "+a[i].re+" + 1i*"+a[i].im+"   ")}
-                console.log(displayText+" ]")
+                console.log(displayText+" ]");
+                return 0;
             }        
             if(a[0] instanceof Array){ // a is a matrix
                 let displayText="  \n";
@@ -220,7 +227,8 @@ var concatRows=function(A,B){
                     displayText=displayText.concat("\n");
                 }
                 displayText=displayText.concat("  \n ");
-                console.log(displayText)
+                console.log(displayText);
+                return 0;
             }
         }
         if(a.hasOwnProperty("stride")){ // a is an ndarray
@@ -229,10 +237,22 @@ var concatRows=function(A,B){
             console.log(result);
             return result;
         }
-        // console.error("universal add has not been implemented for this use case");
+         console.error("display cannot print this data");
+         return 0;
     }
     
     
+    var reshape=function(vec,rows,cols){
+
+        if (vec.length==rows*cols){
+            let mat=[];
+            for(let row=0;row<rows;row++){
+                mat[row]=vec.
+            }
+        }
+        console.error("cannot perform reshape operation. Check matrix dimensions")
+
+    }
     
     
     //
