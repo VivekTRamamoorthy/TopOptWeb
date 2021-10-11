@@ -37,15 +37,28 @@ const B12 = [[ 2, -3, 4, -9],[ -3, 2, 9, -2],[ 4, 9 ,2 ,3],[ -9, -2, 3, 2]];
 var temp1 = concatCols(concatRows(A11,A12),concatRows(transpose(A12),A11));
 
 KE=mul(1/(1-nu**2)/24,temp1);
-display(KE)
+
 console.log("I am here")
 
 // nodenrs = reshape(1:(1+nelx)*(1+nely),1+nely,1+nelx);
 
-let nodenrs = reshape()
+let nodenrs = reshape(range(1,(1+nelx)*(1+nely)),1+nely,1+nelx )
+
 // edofVec = reshape(2*nodenrs(1:end-1,1:end-1)+1,nelx*nely,1);
+
+let edofVec =  reshape(mul(2, add(1,get(nodenrs,range(1,nodenrs.length-1),range(1,nodenrs[0].length-1) ) )),nelx*nely,1);
+
 // edofMat = repmat(edofVec,1,8)+repmat([0 1 2*nely+[2 3 0 1] -2 -1],nelx*nely,1);
+temp1 = repmat(edofVec,1,8);
+temp2=repmat([[0, 1, 2*nely+2, 2*nely+3, 2*nely+0,2*nely+1, -2, -1]],nelx*nely,1);
+let edofMat = add(temp1,temp2)
+
+display(edofMat)
+
 // iK = reshape(kron(edofMat,ones(8,1))',64*nelx*nely,1);
+
+let iK = reshape( transpose( kron(edofMat,ones(8,1)) ),64*nelx*nely,1);
+
 // jK = reshape(kron(edofMat,ones(1,8))',64*nelx*nely,1);
 // % DEFINE LOADS AND SUPPORTS (HALF MBB-BEAM)
 // F = sparse(2,1,-1,2*(nely+1)*(nelx+1),1);

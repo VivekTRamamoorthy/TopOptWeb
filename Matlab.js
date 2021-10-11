@@ -4,7 +4,6 @@
 // Use equivalent typed code for speed.
 // BASIC MATLAB  FUNCTIONS
 
-const { copyFile } = require("fs");
 
 var ndarrayToggle=0; // doesn't use ndarray functions for basic operations such as zeros, ones etc
 var complexToggle=0; // doesn't use complex interpretations
@@ -98,7 +97,7 @@ var max=function(arr){return Math.max.apply(null,arr);}
 
 var range=function(a,b,c=""){// 1:5 range(1,5) or  1:0.1:5 range(1,0.1,5) Matlab's colon and double colon
     let n,step;
-    if(typeof(c)=="number"){step=b;n=Math.round((c-a)/b)+1} // three inputs
+    if(typeof(c)=="number"){step=b;n=Math.floor((c-a)/b)+1} // three inputs
     else {step=1;n=Math.max(Math.round((b-a)/step)+1,0);} // only two inputs
     if(n<1){return [];}
     return (new Array(n)).fill(0).map((x,i)=>a+i*step);
@@ -247,11 +246,80 @@ var concatRows=function(A,B){
         if (vec.length==rows*cols){
             let mat=[];
             for(let row=0;row<rows;row++){
-                mat[row]=vec.
+                let start=row*cols;
+                let end=(row+1)*cols;
+                mat[row]=vec.slice(start,end)
             }
+            return mat;
+        }else if(vec.length*vec[0].length==rows*cols){
+            let mat=[];
+            let p=0;
+            for(let row=0; row<rows; row++){
+                mat[row]=[];
+                for(let col=0; col<cols; col++){
+                    let vcols=vec[0].length;
+                    let vrows=vec.length;
+                    let vcol=p%vrows;
+                    let vrow=Math.floor(p/vcols);
+                    mat[row][col]=vec[vrow][vcol];
+                    p++;
+                }
+            }
+            return mat;
         }
         console.error("cannot perform reshape operation. Check matrix dimensions")
+        console.error("vector length: ",vec.length,"  rows: ",rows,"  cols: ", cols )
+        return [];
+    }
 
+    var get=function(mat,rrange,crange){
+
+
+
+        if (rrange==':'){         
+            rrange=range(1,mat.length);
+        }
+        rrange=rrange.map((x,i)=>{if(x<1){return mat.length-x;} return x});
+        if (crange==':'){
+            crange=range(1,mat[0].length);
+        }
+        crange=crange.map((x,i)=>{if(x<1){return mat[0].length-x;} return x});
+
+        let res=[];
+
+        let i=0, j=0;
+        for(let ri=0;ri<rrange.length;ri++){
+            res[i]=[];
+            j=0;
+            for(let ci=0;ci<crange.length; ci++){
+                //  console.log({i,j,ri,ci})
+                res[i][j]=mat[rrange[ri]-1][crange[ci]-1];
+                j++;
+            }
+            i++
+
+        }
+        return res;
+
+    }
+
+
+
+    var repmat= function(mat,rows,cols){
+        let mrows=mat.length;
+        let mcols=mat[0].length;
+        let res=[];
+        res=new Array(mrows*rows).fill(  new Array(mcols*cols).fill(0)  );
+        res= res.map((resrow,row)=>{ return resrow.map((reselem,col) =>{return mat[row%mrows][col%mcols]}) } );
+
+        return res;
+
+
+    }
+
+
+    var kron= function(mat1,Y){
+        
     }
     
     
