@@ -12,7 +12,7 @@ image(x);
 // % top88(100,100,0.5,1,1,2)
 
 // nelx=100;nely=100;volfrac=0.3;penal=2;rmin=1;ft=2;
-const nelx=100,nely=100, volfrac=0.3,penal=2,rmin=1,ft=2;
+const nelx=10,nely=10, volfrac=0.3,penal=2,rmin=1,ft=2;
 
 // %% MATERIAL PROPERTIES
 // E0 = 1;
@@ -56,22 +56,45 @@ let edofMat = add(temp1,temp2)
 
 // display(edofMat)
 
-A=[[1,2,3],[2,3,4]];
-Y=[[1],[1],[1]];
-
-display(kron(A,Y))
 
 // iK = reshape(kron(edofMat,ones(8,1))',64*nelx*nely,1);
 
-// let iK = reshape( transpose( kron(edofMat,ones(8,1)) ),64*nelx*nely,1);
+let iK= reshape(transpose(kron(edofMat,ones(8,1))) , 64*nelx*nely,1)
+
+display(size(iK))
 
 // jK = reshape(kron(edofMat,ones(1,8))',64*nelx*nely,1);
+
+let jK= reshape(transpose(kron(edofMat,ones(1,8))) , 64*nelx*nely,1)
+
+display(size(jK))
+
 // % DEFINE LOADS AND SUPPORTS (HALF MBB-BEAM)
+
 // F = sparse(2,1,-1,2*(nely+1)*(nelx+1),1);
+
+let F=zeros(2*(nely+1)*(nelx+1),1)
+F[1]=-1;
+
+
 // U = zeros(2*(nely+1)*(nelx+1),1);
+
+let U = zeros(2*(nely+1)*(nelx+1),1);
+
 // fixeddofs = union([1:2:2*(nely+1)],[2*(nelx+1)*(nely+1)]);
+
+fixeddofs = union(range(1,2,2*(nely+1)),2*(nelx+1)*(nely+1));
+
+
 // alldofs = [1:2*(nely+1)*(nelx+1)];
+
+let alldofs = range(1,2*(nely+1)*(nelx+1));
+
 // freedofs = setdiff(alldofs,fixeddofs);
+
+let freedofs = setdiff(alldofs,fixeddofs);
+
+
 // %% PREPARE FILTER
 // iH = ones(nelx*nely*(2*(ceil(rmin)-1)+1)^2,1);
 // jH = ones(size(iH));
@@ -93,16 +116,35 @@ display(kron(A,Y))
 // end
 // H = sparse(iH,jH,sH);
 // Hs = sum(H,2);
+
+let H=eye(nelx*nely);
+let Hs=ones(nelx*nely,1);
+
+
 // %% INITIALIZE ITERATION
 // x = repmat(volfrac,nely,nelx);
+
+x=repmat([[volfrac]],nely,nelx); // the double square bracket is because repmat first input must be a matrix
+display(x)
+
 // xPhys = x;
+let xPhy=x;
 // loop = 0;
+let loop=0;
 // change = 1;
+let change=1;
+
+
 // %% START ITERATION
+
 // while change > 0.01
+
+while(change>0.01){
 //     loop = loop + 1;
+loop ++;
 //     %% FE-ANALYSIS
 //     sK = reshape(KE(:)*(Emin+xPhys(:)'.^penal*(E0-Emin)),64*nelx*nely,1);
+sK=reshape(KE)
 //     K = sparse(iK,jK,sK); K = (K+K')/2;
 //     U(freedofs) = K(freedofs,freedofs)\F(freedofs);
 //     %% OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS
@@ -137,6 +179,7 @@ display(kron(A,Y))
 //     %% PLOT DENSITIES
 //     colormap(gray); imagesc(1-xPhys); caxis([0 1]); axis equal; axis off; drawnow;
 // end
+}
 
 
 
