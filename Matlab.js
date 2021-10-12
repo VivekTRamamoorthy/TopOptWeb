@@ -186,7 +186,7 @@ var display=function(a){
             let displayText="\n [";
             for(let i=0;i<a.length;i++){displayText=displayText.concat("  "+ a[i]+"  ")}
             displayText=displayText.concat(" ]");
-            console.log(displayText);
+            // console.log(displayText);
             return 0;
         }
         if(a[0] instanceof cx){ // a is a complex array
@@ -221,6 +221,7 @@ var display=function(a){
 
 
 var reshape=function(vec,rows,cols){
+
     
     if (vec.length==rows*cols){
         let mat=[];
@@ -230,16 +231,16 @@ var reshape=function(vec,rows,cols){
             mat[row]=vec.slice(start,end)
         }
         return mat;
-    }else if(vec.length*vec[0].length==rows*cols){
-        let mat=[];
+    }else if(vec.length*vec[0].length==rows*cols){     // for vec of type matrices,  read column by column
         let p=0;
-        for(let row=0; row<rows; row++){
-            mat[row]=[];
-            for(let col=0; col<cols; col++){
+        let mat= new Array(rows).fill().map(x=> new Array(cols).fill().map(x=>0));
+
+        for(let col=0; col<cols; col++){
+            for(let row=0; row<rows; row++){
                 let vcols=vec[0].length;
                 let vrows=vec.length;
-                let vcol=p%vrows;
-                let vrow=Math.floor(p/vcols);
+                let vcol=Math.floor(p/vrows) ; // current col in v
+                let vrow=p%vrows; // current row in v
                 mat[row][col]=vec[vrow][vcol];
                 p++;
             }
@@ -253,18 +254,18 @@ var reshape=function(vec,rows,cols){
 
 var get=function(mat,rrange,crange){
     
-    
+    // array indices in rrange and crange are assumed to start from 1 like in matlab
     
     if (rrange==':'){         
-        rrange=range(1,mat.length);
+        rrange=range(0,mat.length-1);
     }
-    if(typeof(rrange)=="number"){   rrange=[rrange];   }
-    rrange=rrange.map((x,i)=>{if(x<1){return mat.length+x;} return x});
+    if(typeof(rrange)=="number"){   rrange=[rrange];   } // for input of type get(mat,1,2). should be get(mat,[1],[2])
+    rrange=rrange.map((x,i)=>{if(x<1){return mat.length+x;} return x}); // for negative values like -3 to be considered end-3
     if (crange==':'){
-        crange=range(1,mat[0].length);
+        crange=range(0,mat[0].length-1);
     }
     if(typeof(crange)=="number"){   crange=[crange];   }
-    crange=crange.map((x,i)=>{if(x<1){return mat[0].length+x;} return x});
+    crange=crange.map((x,i)=>{if(x<1){return mat[0].length+x;} return x}); // x-1 minus one is to use array index starting from 1
     
     let res=[];
     
@@ -274,7 +275,7 @@ var get=function(mat,rrange,crange){
         j=0;
         for(let ci=0;ci<crange.length; ci++){
             //  console.log({i,j,ri,ci})
-            res[i][j]=mat[rrange[ri]-1][crange[ci]-1];
+            res[i][j]=mat[rrange[ri]-1][crange[ci]-1]; // -1 is to use array index starting from 1
             j++;
         }
         i++
@@ -357,7 +358,7 @@ var unique=function(C){
 var sparse=function(iK,jK,sK,m,n){
     let K=zeros(m,n);
     for (let i=0;i<iK.length;i++){
-        K[iK[i]][jK[i]]=sK[i][0];
+        K[iK[i]-1 ][jK[i] -1 ]=K[iK[i]-1 ][jK[i] -1 ]+sK[i][0]; // the minus ones to consider index starting from 1
     }
     return K;
 

@@ -44,11 +44,11 @@ console.log("I am here")
 
 // nodenrs = reshape(1:(1+nelx)*(1+nely),1+nely,1+nelx);
 
-let nodenrs = reshape(range(1,(1+nelx)*(1+nely)),1+nely,1+nelx )
+let nodenrs = reshape([range(1,(1+nelx)*(1+nely))],1+nely,1+nelx )
 
 // edofVec = reshape(2*nodenrs(1:end-1,1:end-1)+1,nelx*nely,1);
-
-let edofVec =  reshape(mul(2, add(1,get(nodenrs,range(1,nodenrs.length-1),range(1,nodenrs[0].length-1) ) )),nelx*nely,1);
+temp1= add(1,mul(2, get(nodenrs,range(1,nodenrs.length-1),range(1,nodenrs[0].length-1) ) ))
+let edofVec =  reshape(temp1,nelx*nely,1);
 
 // edofMat = repmat(edofVec,1,8)+repmat([0 1 2*nely+[2 3 0 1] -2 -1],nelx*nely,1);
 temp1 = repmat(edofVec,1,8);
@@ -71,7 +71,7 @@ let jK= reshape(transpose(kron(edofMat,ones(1,8))) , 64*nelx*nely,1)
 // F = sparse(2,1,-1,2*(nely+1)*(nelx+1),1);
 
 let F=zeros(2*(nely+1)*(nelx+1),1)
-F[1]=-1;
+F[1]=[-1];
 
 
 // U = zeros(2*(nely+1)*(nelx+1),1);
@@ -149,22 +149,24 @@ sK=reshape( mul(colon(KE),temp1), 64*nelx*nely,1);
 //     K = sparse(iK,jK,sK); K = (K+K')/2;
 
 K = sparse(iK,jK,sK,alldofs.length,alldofs.length);
-display(size(K))
+
 //     U(freedofs) = K(freedofs,freedofs)\F(freedofs);
 Kfree=get(K,freedofs,freedofs);
 Ffree=get(F,freedofs,[1]);
-// Ufree=mul(math.inv(Kfree),Ffree);
+// Ufree=mul(math.inv(Kfree),Ffree); // doesnt work matrix is singular
 
 // TESTING AN EXAMPLE
 
-// var A = ([ 2, 1, -1, -3, -1, 2, -2, 1, 2 ], [ 3, 3 ], [ 1, 3 ]);
-// var B = ndarray([ 8, -11, -3 ])
-var upA= [[ 2, 1, -1],[ -3, -1, 2],[ -2, 1, 2 ]] // should be read as packed vectors
 
-var upB= [ -3 ,1, 3]
-// var upB= [ [-3] ,[1 ], [3] ] //
+// var upA= [[ 2, 1, -1],[ -3, -1, 2],[ -2, 1, 2 ]] // should be read as packed vectors
 
-var X=mldivide(upA,upB);
+// var upB= [ -3 ,1, 3]
+
+// var X=mldivide(upA,upB);
+inputF=transpose(Ffree);
+Ufree=mldivide(transpose(Kfree),inputF[0])
+
+
 
 
 //     %% OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS
