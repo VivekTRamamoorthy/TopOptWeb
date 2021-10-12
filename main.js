@@ -40,7 +40,7 @@ var temp2= concatCols(concatRows(B11,B12),concatRows(transpose(B12),B11));
 
 KE=mul(1/(1-nu**2)/24,  add(temp1,mul(temp2,nu))  );
 
-console.log("I am here")
+
 
 // nodenrs = reshape(1:(1+nelx)*(1+nely),1+nely,1+nelx);
 
@@ -136,7 +136,7 @@ let change=1;
 
 // while change > 0.01
 
-for(loop=0;loop<10;loop++){
+for(loop=0;loop<1;loop++){
 //     loop = loop + 1;
 
 //     %% FE-ANALYSIS
@@ -166,20 +166,52 @@ Ffree=get(F,freedofs,[1]);
 inputF=transpose(Ffree);
 Ufree=mldivide(transpose(Kfree),inputF[0])
 
-
+U=new Array(alldofs.length).fill().map(x=>0);
+for (let i=0;i<freedofs.length; i++)
+{
+    U[freedofs[i]-1]=Ufree[i];
+}
+U=transpose(U);
 
 
 //     %% OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS
 
 //     ce = reshape(sum(  (U(edofMat)*KE).*U(edofMat),2  )    ,nely,nelx);
 
-// ce = reshape(sum(( mul( get(U,edofMat,[1]) , KE )      )
+UedofMat = zeros(size(edofMat));
+
+for (let row = 0; row < UedofMat.length; row++) {
+    for (let col = 0; col < UedofMat[0].length; col++) {
+         UedofMat[row][col] = U[edofMat[row][col] - 1];
+        
+    }
+    
+}
+
+
+
+
+
+// ce = reshape(sum(  (U(edofMat)*KE).*U(edofMat),2  )    ,nely,nelx);
+
+ce=reshape( sum( dotmul(mul(UedofMat,KE),UedofMat) , 2), nely,nelx); // verified with matlab upto this point
+
+
 
 //     c = sum(sum((Emin+xPhys.^penal*(E0-Emin)).*ce))
 
+c= sum( sum(  dotmul(add (Emin, mul( pow(xPhys,penal),E0-Emin ) ) ,ce  ),1 ),2);
+
+c=c[0][0]; // converting single element matrix to a number
 
 //     dc = -penal*(E0-Emin)*xPhys.^(penal-1).*ce;
+
+dc =dotmul( mul(-penal*(E0-Emin),pow( xPhys,penal-1)) , ce);
+console.log("Verified upto this line")
+
 //     dv = ones(nely,nelx);
+
+dv=ones(nely,nelx);
 //     %% FILTERING/MODIFICATION OF SENSITIVITIES
 //     if ft == 1
 //         dc(:) = H*(x(:).*dc(:))./Hs./max(1e-3,x(:));
@@ -189,6 +221,9 @@ Ufree=mldivide(transpose(Kfree),inputF[0])
 //     end
 //     %% OPTIMALITY CRITERIA UPDATE OF DESIGN VARIABLES AND PHYSICAL DENSITIES
 //     l1 = 0; l2 = 1e9; move = 0.2;
+
+compliancebox=document.getElementById('compliancebox');
+compliancebox.innerHTML='c = '+c;
 //     while (l2-l1)/(l1+l2) > 1e-3
 //         lmid = 0.5*(l2+l1);
 //         xnew = max(0,max(x-move,min(1,min(x+move,x.*sqrt(-dc./dv/lmid)))));

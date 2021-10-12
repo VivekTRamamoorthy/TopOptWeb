@@ -66,6 +66,43 @@ var find = function(array){
 
 var sort=function(array){return array.sort((a,b)=>a-b)}
 
+
+
+
+var sum=function(A,dim=1){ // 1 is column sum and 2 is row sum
+    let s=0;
+    if(typeof(A[0])=="number"){
+    for (let elem = 0; elem < A.length; elem++) {
+        s+=A[elem];
+        
+
+    }
+    return s;
+}else{ // A is an array
+    if(dim==1){ // column sum
+        let s=zeros(1,A[0].length);
+        for (let col = 0; col < A[0].length; col++) {
+            for (let row = 0; row < A.length; row++) {
+                s[0][col]+=  A[row][col];
+                
+            }
+
+            
+        }
+        return s;
+    }
+    if(dim==2){ // row sum
+        let s=zeros(A.length,1)
+        for (let row = 0; row < A.length; row++) {
+        for (let col = 0; col < A[0].length; col++) {
+                s[row][0]+=  A[row][col];
+            }
+        }
+        return s;
+    }
+}
+}
+
 var abs=function(array){return array.map(x=>Math.abs(x))}
 
 var setdiff=function(arr1,arr2){
@@ -172,6 +209,18 @@ var zeros=function(a,b=0){
     
 }
 
+var rand=function(a,b=0){
+    if(b==0){b=a;};
+    let rows,cols;
+    if(a instanceof Array){rows=a[0]; cols=a[1]; }; // if a is an array and a(2) is not 1
+    if(typeof(a)== "number"){rows=a;cols=b;};
+    return  new Array(rows).fill().map(x=>new Array(cols).fill().map(x=>Math.random()));
+    
+}
+
+
+
+
 var display=function(a){
     if(typeof(a)=="number"){ // a is number
         console.log(a)
@@ -223,7 +272,7 @@ var display=function(a){
 var reshape=function(vec,rows,cols){
 
     
-    if (vec.length==rows*cols){
+    if (vec.length==rows*cols && typeof(vec[0])=="number"){
         let mat=[];
         for(let row=0;row<rows;row++){
             let start=row*cols;
@@ -729,6 +778,23 @@ var pow=function(a,b){ // universal add function, not fully supported for ndarra
     return "bulb";
     
 } 
+
+
+
+var dotmul = function(A,B){
+    if(A.length==B.length & A[0].length==B[0].length){
+    C=zeros(size(A))
+    for (let row = 0; row < A.length; row++) {
+        for (let col = 0; col < A[0].length; col++) {
+            C[row][col]=A[row][col]*B[row][col];
+            
+        }
+        
+    }
+    return C;}
+    console.error('Matrix dimensions do not agree for dot multiplication')
+}
+
 
 
 
