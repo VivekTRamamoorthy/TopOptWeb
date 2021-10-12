@@ -153,7 +153,18 @@ display(size(K))
 //     U(freedofs) = K(freedofs,freedofs)\F(freedofs);
 Kfree=get(K,freedofs,freedofs);
 Ffree=get(F,freedofs,[1]);
-Ufree=mul(math.inv(Kfree),Ffree);
+// Ufree=mul(math.inv(Kfree),Ffree);
+
+// TESTING AN EXAMPLE
+
+// var A = ([ 2, 1, -1, -3, -1, 2, -2, 1, 2 ], [ 3, 3 ], [ 1, 3 ]);
+// var B = ndarray([ 8, -11, -3 ])
+var upA= [[ 2, 1, -1],[ -3, -1, 2],[ -2, 1, 2 ]] // should be read as packed vectors
+
+var upB= [ -3 ,1, 3]
+// var upB= [ [-3] ,[1 ], [3] ] //
+
+var X=mldivide(upA,upB);
 
 
 //     %% OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS
