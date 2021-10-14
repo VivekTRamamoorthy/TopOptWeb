@@ -126,7 +126,7 @@ x=repmat([[volfrac]],nely,nelx); // the double square bracket is because repmat 
 
 
 // xPhys = x;
-var xPhys=x;
+var xPhys=[...x];
 // loop = 0;
 var loop=0;
 // change = 1;
@@ -137,7 +137,10 @@ var change=1;
 
 // while change > 0.01
 
-for(loop=0;loop<1;loop++){
+var ce,c,dc, lmid,l1,l2,move,lmid ;
+
+
+var SIMPloop= function(){
 //     loop = loop + 1;
 
 //     %% FE-ANALYSIS
@@ -195,19 +198,19 @@ for (let row = 0; row < UedofMat.length; row++) {
 
 // ce = reshape(sum(  (U(edofMat)*KE).*U(edofMat),2  )    ,nely,nelx);
 
-var ce=reshape( sum( dotmul(mul(UedofMat,KE),UedofMat) , 2), nely,nelx); // verified with matlab upto this point
+ce=reshape( sum( dotmul(mul(UedofMat,KE),UedofMat) , 2), nely,nelx); // verified with matlab upto this point
 
 
 
 //     c = sum(sum((Emin+xPhys.^penal*(E0-Emin)).*ce))
 
-var c= sum( sum(  dotmul(add (Emin, mul( pow(xPhys,penal),E0-Emin ) ) ,ce  ),1 ),2);
+c= sum( sum(  dotmul(add (Emin, mul( pow(xPhys,penal),E0-Emin ) ) ,ce  ),1 ),2);
 
 c=c[0][0]; // converting single element matrix to a number
 
 //     dc = -penal*(E0-Emin)*xPhys.^(penal-1).*ce;
 
-var dc =dotmul( mul(-penal*(E0-Emin),pow( xPhys,penal-1)) , ce);
+dc =dotmul( mul(-penal*(E0-Emin),pow( xPhys,penal-1)) , ce);
 
 
 //     dv = ones(nely,nelx);
@@ -222,7 +225,7 @@ dv=ones(nely,nelx);
 //     end
 //     %% OPTIMALITY CRITERIA UPDATE OF DESIGN VARIABLES AND PHYSICAL DENSITIES
 //     l1 = 0; l2 = 1e9; move = 0.2;
-var l1 = 0, l2 = 1e9, move = 0.2;
+l1 = 0, l2 = 1e9, move = 0.2;
 compliancebox=document.getElementById('compliancebox');
 compliancebox.innerHTML='c = '+c;
 //     while (l2-l1)/(l1+l2) > 1e-3
@@ -234,11 +237,11 @@ while((l2-l1)/(l1+l2)>0.001){
 
 
 //         lmid = 0.5*(l2+l1);
-var lmid = 0.5*(l2+l1);
+lmid = 0.5*(l2+l1);
 //         xnew = max(0,max(x-move,min(1,min(x+move,x.*sqrt(-dc./dv/lmid)))));
 
 //  var xnew= min (  add(x,move) , dotmul(x, sqrt( mul(-1/lmid,dotdiv(dc,dv) )   )) )
- var xnew= max(0,max(sub(x,move), min ( 1, min ( add(x,move) , dotmul(x, sqrt( mul(-1/lmid,dotdiv(dc,dv) )) ) ))))
+xnew= max(0,max(sub(x,move), min( 1, min( add(x,move) , dotmul(x, sqrt( mul(-1/lmid,dotdiv(dc,dv) )) ) ))))
 
 //         if ft == 1
 //             xPhys = xnew;
@@ -247,7 +250,7 @@ var lmid = 0.5*(l2+l1);
 //         end
 
         if (ft == 1){
-            xPhys = xnew; //             xPhys = xnew;
+            xPhys =[...xnew]; //             xPhys = xnew;
         }
         else if (ft == 2){ //             xPhys(:) = (H*xnew(:))./Hs;
             var xPhyscolon = dotdiv(mul(H, colon(xnew)),Hs);
@@ -271,7 +274,7 @@ else{ l2 = lmid;
 }
 
 whileloopcounter++;
-if(whileloopcounter>10){
+if(whileloopcounter>100){
 break;
 }
 
@@ -281,6 +284,7 @@ break;
 //     change = max(abs(xnew(:)-x(:)));
 change = max(transpose(abs( sub(colon(xnew),colon(x))   )))
 //     x = xnew;
+x=xnew;
 //     %% PRINT RESULTS
 //     fprintf(' It.:%5i Obj.:%11.4f Vol.:%7.3f ch.:%7.3f\n',loop,c, ...
 //         mean(xPhys(:)),change);
@@ -288,8 +292,13 @@ console.log('It: ', loop)
 //     %% PLOT DENSITIES
 //     colormap(gray); imagesc(1-xPhys); caxis([0 1]); axis equal; axis off; drawnow;
 // end
+image(sub(1,x));
+loop++;
+console.log('SIMP ',loop,' iteration')
 } // end of for loop
 
+
+SIMPloop();
 
 
     

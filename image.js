@@ -21,8 +21,8 @@ function image(img){
                         c.lineWidth=3;
                         c.fillStyle="rgba(color,color,color,1)" ; //  color
                         
-                        x=i*canvas.width/nelx;
-                        y=j*canvas.height/nely;
+                        let x=i*canvas.width/nelx;
+                        let y=j*canvas.height/nely;
                         c.fillRect(x,y,pixelWidth,pixelHeight);
                         c.strokeStyle = 'black';
                         c.strokeRect(x,y,pixelWidth,pixelHeight);
