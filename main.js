@@ -2,8 +2,7 @@
 
 // SAMPLE SHAPE
 tic()
-var x=zeros(10,10)
-image(x);
+
 
 // 99 line matalab code
 
@@ -13,6 +12,8 @@ image(x);
 
 // nelx=100;nely=100;volfrac=0.3;penal=2;rmin=1;ft=2;
 const nelx=10,nely=10, volfrac=0.3,penal=2,rmin=1,ft=2;
+var x=mul(0.5,zeros(nelx,nely))
+image(x);
 
 // %% MATERIAL PROPERTIES
 // E0 = 1;
@@ -44,39 +45,39 @@ KE=mul(1/(1-nu**2)/24,  add(temp1,mul(temp2,nu))  );
 
 // nodenrs = reshape(1:(1+nelx)*(1+nely),1+nely,1+nelx);
 
-let nodenrs = reshape([range(1,(1+nelx)*(1+nely))],1+nely,1+nelx )
+var nodenrs = reshape([range(1,(1+nelx)*(1+nely))],1+nely,1+nelx )
 
 // edofVec = reshape(2*nodenrs(1:end-1,1:end-1)+1,nelx*nely,1);
 temp1= add(1,mul(2, get(nodenrs,range(1,nodenrs.length-1),range(1,nodenrs[0].length-1) ) ))
-let edofVec =  reshape(temp1,nelx*nely,1);
+var edofVec =  reshape(temp1,nelx*nely,1);
 
 // edofMat = repmat(edofVec,1,8)+repmat([0 1 2*nely+[2 3 0 1] -2 -1],nelx*nely,1);
 temp1 = repmat(edofVec,1,8);
 temp2=repmat([[0, 1, 2*nely+2, 2*nely+3, 2*nely+0,2*nely+1, -2, -1]],nelx*nely,1);
-let edofMat = add(temp1,temp2)
+var edofMat = add(temp1,temp2)
 
 // display(edofMat)
 
 
 // iK = reshape(kron(edofMat,ones(8,1))',64*nelx*nely,1);
 
-let iK= reshape(transpose(kron(edofMat,ones(8,1))) , 64*nelx*nely,1)
+var iK= reshape(transpose(kron(edofMat,ones(8,1))) , 64*nelx*nely,1)
 
 // jK = reshape(kron(edofMat,ones(1,8))',64*nelx*nely,1);
 
-let jK= reshape(transpose(kron(edofMat,ones(1,8))) , 64*nelx*nely,1)
+var jK= reshape(transpose(kron(edofMat,ones(1,8))) , 64*nelx*nely,1)
 
 // % DEFINE LOADS AND SUPPORTS (HALF MBB-BEAM)
 
 // F = sparse(2,1,-1,2*(nely+1)*(nelx+1),1);
 
-let F=zeros(2*(nely+1)*(nelx+1),1)
+var F=zeros(2*(nely+1)*(nelx+1),1)
 F[1]=[-1];
 
 
 // U = zeros(2*(nely+1)*(nelx+1),1);
 
-let U = zeros(2*(nely+1)*(nelx+1),1);
+var U = zeros(2*(nely+1)*(nelx+1),1);
 
 // fixeddofs = union([1:2:2*(nely+1)],[2*(nelx+1)*(nely+1)]);
 
@@ -85,11 +86,11 @@ fixeddofs = union(range(1,2,2*(nely+1)),2*(nelx+1)*(nely+1));
 
 // alldofs = [1:2*(nely+1)*(nelx+1)];
 
-let alldofs = range(1,2*(nely+1)*(nelx+1));
+var alldofs = range(1,2*(nely+1)*(nelx+1));
 
 // freedofs = setdiff(alldofs,fixeddofs);
 
-let freedofs = setdiff(alldofs,fixeddofs);
+var freedofs = setdiff(alldofs,fixeddofs);
 
 
 // %% PREPARE FILTER
@@ -114,8 +115,8 @@ let freedofs = setdiff(alldofs,fixeddofs);
 // H = sparse(iH,jH,sH);
 // Hs = sum(H,2);
 
-let H=eye(nelx*nely);
-let Hs=ones(nelx*nely,1);
+var H=eye(nelx*nely);
+var Hs=ones(nelx*nely,1);
 
 
 // %% INITIALIZE ITERATION
@@ -125,11 +126,11 @@ x=repmat([[volfrac]],nely,nelx); // the double square bracket is because repmat 
 
 
 // xPhys = x;
-let xPhys=x;
+var xPhys=x;
 // loop = 0;
-let loop=0;
+var loop=0;
 // change = 1;
-let change=1;
+var change=1;
 
 
 // %% START ITERATION
@@ -194,20 +195,20 @@ for (let row = 0; row < UedofMat.length; row++) {
 
 // ce = reshape(sum(  (U(edofMat)*KE).*U(edofMat),2  )    ,nely,nelx);
 
-ce=reshape( sum( dotmul(mul(UedofMat,KE),UedofMat) , 2), nely,nelx); // verified with matlab upto this point
+var ce=reshape( sum( dotmul(mul(UedofMat,KE),UedofMat) , 2), nely,nelx); // verified with matlab upto this point
 
 
 
 //     c = sum(sum((Emin+xPhys.^penal*(E0-Emin)).*ce))
 
-c= sum( sum(  dotmul(add (Emin, mul( pow(xPhys,penal),E0-Emin ) ) ,ce  ),1 ),2);
+var c= sum( sum(  dotmul(add (Emin, mul( pow(xPhys,penal),E0-Emin ) ) ,ce  ),1 ),2);
 
 c=c[0][0]; // converting single element matrix to a number
 
 //     dc = -penal*(E0-Emin)*xPhys.^(penal-1).*ce;
 
-dc =dotmul( mul(-penal*(E0-Emin),pow( xPhys,penal-1)) , ce);
-console.log("Verified upto this line")
+var dc =dotmul( mul(-penal*(E0-Emin),pow( xPhys,penal-1)) , ce);
+
 
 //     dv = ones(nely,nelx);
 
@@ -221,20 +222,64 @@ dv=ones(nely,nelx);
 //     end
 //     %% OPTIMALITY CRITERIA UPDATE OF DESIGN VARIABLES AND PHYSICAL DENSITIES
 //     l1 = 0; l2 = 1e9; move = 0.2;
-
+var l1 = 0, l2 = 1e9, move = 0.2;
 compliancebox=document.getElementById('compliancebox');
 compliancebox.innerHTML='c = '+c;
 //     while (l2-l1)/(l1+l2) > 1e-3
+whileloopcounter=0;
+
+console.log("Verified upto this line")
+
+while((l2-l1)/(l1+l2)>0.001){
+
+
 //         lmid = 0.5*(l2+l1);
+var lmid = 0.5*(l2+l1);
 //         xnew = max(0,max(x-move,min(1,min(x+move,x.*sqrt(-dc./dv/lmid)))));
+
+//  var xnew= min (  add(x,move) , dotmul(x, sqrt( mul(-1/lmid,dotdiv(dc,dv) )   )) )
+ var xnew= max(0,max(sub(x,move), min ( 1, min ( add(x,move) , dotmul(x, sqrt( mul(-1/lmid,dotdiv(dc,dv) )) ) ))))
+
 //         if ft == 1
 //             xPhys = xnew;
 //         elseif ft == 2
 //             xPhys(:) = (H*xnew(:))./Hs;
 //         end
+
+        if (ft == 1){
+            xPhys = xnew; //             xPhys = xnew;
+        }
+        else if (ft == 2){ //             xPhys(:) = (H*xnew(:))./Hs;
+            var xPhyscolon = dotdiv(mul(H, colon(xnew)),Hs);
+            let p=0;
+            for (let col = 0; col < xPhys.length; col++) {
+                for (let row = 0; row < xPhys.length; row++) {
+                    xPhyscol=p%xPhys.length;
+                    xPhysrow=Math.floor(p/xPhys.length);
+                    xPhys[xPhysrow][xPhyscol]=xPhyscolon[p][0];
+                    p++;
+                }
+            }
+        }
+
 //         if sum(xPhys(:)) > volfrac*nelx*nely, l1 = lmid; else l2 = lmid; end
+
+if (sum(colon(xPhys)) > volfrac*nelx*nely){
+ l1 = lmid; 
+}
+else{ l2 = lmid;
+}
+
+whileloopcounter++;
+if(whileloopcounter>10){
+break;
+}
+
 //     end
+}
+
 //     change = max(abs(xnew(:)-x(:)));
+change = max(transpose(abs( sub(colon(xnew),colon(x))   )))
 //     x = xnew;
 //     %% PRINT RESULTS
 //     fprintf(' It.:%5i Obj.:%11.4f Vol.:%7.3f ch.:%7.3f\n',loop,c, ...
@@ -243,7 +288,7 @@ console.log('It: ', loop)
 //     %% PLOT DENSITIES
 //     colormap(gray); imagesc(1-xPhys); caxis([0 1]); axis equal; axis off; drawnow;
 // end
-}
+} // end of for loop
 
 
 

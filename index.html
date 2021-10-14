@@ -31,8 +31,30 @@
 
 		<div id='compliancebox' style='background-color: beige;'> c = </div>
 
-
+		<!-- MAIN FUNCTION -->
 		<script type="text/javascript" src="main.js"></script>
+		<script>
+			var SIMPtoggle=0;
+			var toggleSIMP = function (e){
+				if(SIMPtoggle==0){
+				SIMPtoggle=1;
+				SIMPbutton= document.getElementById("SIMPbutton");
+				SIMPbutton.innerText="SIMP is ON";
+				
+				}
+				else if(SIMPtoggle==1){
+					SIMPtoggle=0;
+				SIMPbutton= document.getElementById("SIMPbutton");
+				SIMPbutton.innerText="SIMP is OFF";
+
+				}
+				return
+			}
+		</script>
+		<button>Run SIMP for 10 iterations</button>
+		<button onclick="toggleSIMP()" id="SIMPbutton"> SIMP is OFF </button>
+
+
 	</body>
 	</html>
 	

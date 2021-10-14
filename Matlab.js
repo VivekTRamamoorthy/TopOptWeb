@@ -103,7 +103,25 @@ var sum=function(A,dim=1){ // 1 is column sum and 2 is row sum
 }
 }
 
-var abs=function(array){return array.map(x=>Math.abs(x))}
+var abs=function(A){
+    if(typeof(A)=="number"){return Math.abs(A);} // A is a number
+    if(typeof(A[0])=="number"){return A.map(x=>Math.abs(x));} // A is an array
+    if(typeof(A[0][0])=="number"){return A.map(subarr=>subarr.map(x=>Math.abs(x)));  } //  A is a matrix
+    console.error(" cannot apply absolute for this input type")
+    return [];
+}
+
+var sqrt=function(A){
+    if(typeof(A)=="number"){return Math.sqrt(A);} // A is a number
+    if(typeof(A[0])=="number"){return A.map(x=>Math.sqrt(x));} // A is an array
+    if(typeof(A[0][0])=="number"){return A.map(subarr=>subarr.map(x=>Math.sqrt(x)));  } //  A is a matrix
+    console.error(" cannot apply absolute for this input type")
+    return [];
+}
+
+
+
+
 
 var setdiff=function(arr1,arr2){
     let result=[arr1[0]], indices=[1],donotinclude, current;
@@ -128,9 +146,143 @@ var setdiff=function(arr1,arr2){
     return result
 }
 
-var min=function(arr){return Math.min.apply(null,arr);}
+var min=function(A,B=[],dim=1){ 
+    if(typeof(A)=="number"){ // A is a number
+        if(typeof(B)=="number"){return Math.min(A,B);}
+        if(typeof(B[0])=="number"){return B.map(x=>Math.min(x,A));}
+        if(typeof(B[0][0])=="number"){
+            return B.map(subarr=>subarr.map(x=>Math.min(x,A)));
+        }
+    }
+    if(typeof(A[0])=="number"){ // A is an array
+        if(B.length==0){ return Math.min.apply(null,A);}
+        if(typeof(B[0])=="number"){ // B is also an array
+            if(A.length==B.length){ // two equal arrays returns min of each corresponding element
+                return A.map((x,i)=>min(x,B[i])) 
+            }
+            else{ // if unequal arrays return the minimum of both arrays concatinated is returned
+                return Math.min.apply(null,A.concat(B));
+            }
+        }
+    }
+    if(typeof(A[0][0])=="number") // A is a matrix
+    {
+        if(B.length==0 && dim == 1){ // column min // B==[] doesnt work
+            if(A[0].length==1){// column vector case min to treat it as array
+                A=A.map(x=>x[0]);
+                return Math.min.apply(null,A);
+            }
+            let  colmin=[new Array(A.length).fill().map(x=>0)];
+            for (let col = 0; col < A[0].length; col++) {
+                let colarr=[];
+                for (let row = 0; row < A.length; row++) {
+                    colarr[row]=A[row][col];
+                }
+                colmin[0][col]=Math.min.apply(null,colarr);
+            }
+            return colmin;
+        }
+        if(B.length==0 && dim==2){ // row min // B==[] doesnt work
+            let rowmin=zeros(A.length,1);
+            for (let row = 0; row < A.length; row++) {
+                let rowarr=[];
+                for (let col = 0; col < A[0].length; col++) {
+                    rowarr[col]=  A[row][col];
+                }
+                rowmin[row][0]=Math.min.apply(null,rowarr);
+            }
+            return rowmin;
+        }
+        if(typeof(B)=="number"){ // B is a number
+            return min(B,A);
+        }
+        if(typeof(B[0])=="number"){console.error(" cant find max between matrix and a vector"); return [] ;}
+        if(typeof(B[0][0])=="number"){ // B is a matrix
+            let C=new Array(B.length).fill().map(x=>new Array(B[0].length).fill().map(x=>0));
+            for (let row = 0; row < A.length; row++) {
+                for (let col = 0; col < A[0].length; col++) {
+                    C[row][col]=Math.min(A[row][col],B[row][col]);
+                }
+            }
+            return C;
+        }
+    }
+    console.error(" min function undefined for this input combination")
+    return [];
+}
 
-var max=function(arr){return Math.max.apply(null,arr);}
+var max=function(A,B=[],dim=1){ 
+    if(typeof(A)=="number"){ // A is a number
+        if(typeof(B)=="number"){return Math.max(A,B);}
+        if(typeof(B[0])=="number"){return B.map(x=>Math.max(x,A));}
+        if(typeof(B[0][0])=="number"){
+            return B.map(subarr=>subarr.map(x=>Math.max(x,A)));
+        }
+    }
+    if(typeof(A[0])=="number"){ // A is an array
+        if(B.length==0){ return Math.max.apply(null,A);}
+        if(typeof(B[0])=="number"){ // B is also an array
+            if(A.length==B.length){ // two equal arrays returns max of each corresponding element
+                return A.map((x,i)=>max(x,B[i])) 
+            }
+            else{ // if unequal arrays return the maximum of both arrays concatinated is returned
+                return max(A.concat(B));
+            }
+        }
+    }
+    if(typeof(A[0][0])=="number") // A is a matrix
+    {
+        if(B.length==0 && dim == 1){ // column max
+            if(A[0].length==1){// column vector case max to treat it as array
+                A=A.map(x=>x[0]);
+                return Math.max.apply(null,A);
+            }
+            let  colmax=[new Array(A.length).fill().map(x=>0)];
+            for (let col = 0; col < A[0].length; col++) {
+                let colarr=[];
+                for (let row = 0; row < A.length; row++) {
+                    colarr[row]=A[row][col];
+                }
+                colmax[0][col]=Math.max.apply(null,colarr);
+            }
+            return colmax;
+        }
+        if(B.length==0 && dim==2){ // row max
+            let rowmax=zeros(A.length,1);
+            for (let row = 0; row < A.length; row++) {
+                let rowarr=[];
+                for (let col = 0; col < A[0].length; col++) {
+                    rowarr[col]=  A[row][col];
+                }
+                rowmax[row][0]=Math.max.apply(null,rowarr);
+            }
+            return rowmax;
+        }
+        if(typeof(B)=="number"){ // B is a number
+            return max(B,A);
+        }
+        if(typeof(B[0][0])=="number"){ // B is a matrix
+            let C=new Array(B.length).fill().map(x=>new Array(B[0].length).fill().map(x=>0));
+            for (let row = 0; row < A.length; row++) {
+                for (let col = 0; col < A[0].length; col++) {
+                    C[row][col]=Math.max(A[row][col],B[row][col]);
+                }
+            }
+            return C;
+        }
+    }
+    console.error(" max function undefined for this input combination")
+    return [];
+}
+
+
+
+
+
+
+
+
+
 
 var range=function(a,b,c=""){// 1:5 range(1,5) or  1:0.1:5 range(1,0.1,5) Matlab's colon and double colon
     let n,step;
@@ -300,6 +452,9 @@ var reshape=function(vec,rows,cols){
     console.error("vector length: ",vec.length,"  rows: ",rows,"  cols: ", cols )
     return [];
 }
+
+
+
 
 var get=function(mat,rrange,crange){
     
@@ -794,6 +949,22 @@ var dotmul = function(A,B){
     return C;}
     console.error('Matrix dimensions do not agree for dot multiplication')
 }
+
+
+var dotdiv = function(A,B){
+    if(A.length==B.length & A[0].length==B[0].length){
+    C=zeros(size(A))
+    for (let row = 0; row < A.length; row++) {
+        for (let col = 0; col < A[0].length; col++) {
+            C[row][col]=A[row][col]/B[row][col];
+            
+        }
+        
+    }
+    return C;}
+    console.error('Matrix dimensions do not agree for dot division')
+}
+
 
 
 
