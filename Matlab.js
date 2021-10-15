@@ -387,7 +387,7 @@ var display=function(a){
             let displayText="\n [";
             for(let i=0;i<a.length;i++){displayText=displayText.concat("  "+ a[i]+"  ")}
             displayText=displayText.concat(" ]");
-            // console.log(displayText);
+            console.log(displayText);
             return 0;
         }
         if(a[0] instanceof cx){ // a is a complex array
