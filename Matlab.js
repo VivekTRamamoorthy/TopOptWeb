@@ -965,7 +965,22 @@ var dotdiv = function(A,B){
     console.error('Matrix dimensions do not agree for dot division')
 }
 
+var deepcopy = function(A){
+    if(A instanceof Array){
+        let B=[];
+        for (let index = 0; index < A.length; index++) {
+            B[index] = deepcopy( A[index]); // recursive copy for all subarrays
+        }
+        return B;
+    }
+    else{
+        B=A;
+        return B;
+    }
+}
 
+var disp=display;
+var linspace=range;
 
 
 

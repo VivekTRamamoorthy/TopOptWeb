@@ -1,4 +1,4 @@
-// PLOTTING A SAMPLE MESH
+// This function computes 
 
 // SAMPLE SHAPE
 tic()
@@ -126,7 +126,7 @@ x=repmat([[volfrac]],nely,nelx); // the double square bracket is because repmat 
 
 
 // xPhys = x;
-var xPhys=[...x];
+var xPhys=deepcopy(x);
 // loop = 0;
 var loop=0;
 // change = 1;
@@ -141,116 +141,116 @@ var ce,c,dc, lmid,l1,l2,move,lmid ;
 
 
 var SIMPloop= function(){
-//     loop = loop + 1;
-
-//     %% FE-ANALYSIS
-//     sK = reshape(KE(:)*(Emin+xPhys(:)'.^penal*(E0-Emin)),64*nelx*nely,1); // this is to input in sparse
-
-temp1=add(mul(pow( transpose(colon(xPhys)), penal),E0-Emin),Emin);
-// display(mul(colon(KE),temp1))
-sK=reshape( mul(colon(KE),temp1), 64*nelx*nely,1);
-
-//     K = sparse(iK,jK,sK); K = (K+K')/2;
-
-K = sparse(iK,jK,sK,alldofs.length,alldofs.length);
-
-//     U(freedofs) = K(freedofs,freedofs)\F(freedofs);
-Kfree=get(K,freedofs,freedofs);
-Ffree=get(F,freedofs,[1]);
-// Ufree=mul(math.inv(Kfree),Ffree); // doesnt work matrix is singular
-
-// TESTING AN EXAMPLE
-
-
-// var upA= [[ 2, 1, -1],[ -3, -1, 2],[ -2, 1, 2 ]] // should be read as packed vectors
-
-// var upB= [ -3 ,1, 3]
-
-// var X=mldivide(upA,upB);
-inputF=transpose(Ffree);
-Ufree=mldivide(transpose(Kfree),inputF[0])
-
-U=new Array(alldofs.length).fill().map(x=>0);
-for (let i=0;i<freedofs.length; i++)
-{
-    U[freedofs[i]-1]=Ufree[i];
-}
-U=transpose(U);
-
-
-//     %% OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS
-
-//     ce = reshape(sum(  (U(edofMat)*KE).*U(edofMat),2  )    ,nely,nelx);
-
-UedofMat = zeros(size(edofMat));
-
-for (let row = 0; row < UedofMat.length; row++) {
-    for (let col = 0; col < UedofMat[0].length; col++) {
-         UedofMat[row][col] = U[edofMat[row][col] - 1];
+    //     loop = loop + 1;
+    
+    //     %% FE-ANALYSIS
+    //     sK = reshape(KE(:)*(Emin+xPhys(:)'.^penal*(E0-Emin)),64*nelx*nely,1); // this is to input in sparse
+    
+    temp1=add(mul(pow( transpose(colon(xPhys)), penal),E0-Emin),Emin);
+    // display(mul(colon(KE),temp1))
+    sK=reshape( mul(colon(KE),temp1), 64*nelx*nely,1);
+    
+    //     K = sparse(iK,jK,sK); K = (K+K')/2;
+    
+    K = sparse(iK,jK,sK,alldofs.length,alldofs.length);
+    
+    //     U(freedofs) = K(freedofs,freedofs)\F(freedofs);
+    Kfree=get(K,freedofs,freedofs);
+    Ffree=get(F,freedofs,[1]);
+    // Ufree=mul(math.inv(Kfree),Ffree); // doesnt work matrix is singular
+    
+    // TESTING AN EXAMPLE
+    
+    
+    // var upA= [[ 2, 1, -1],[ -3, -1, 2],[ -2, 1, 2 ]] // should be read as packed vectors
+    
+    // var upB= [ -3 ,1, 3]
+    
+    // var X=mldivide(upA,upB);
+    inputF=transpose(Ffree);
+    Ufree=mldivide(transpose(Kfree),inputF[0])
+    
+    U=new Array(alldofs.length).fill().map(x=>0);
+    for (let i=0;i<freedofs.length; i++)
+    {
+        U[freedofs[i]-1]=Ufree[i];
+    }
+    U=transpose(U);
+    
+    
+    //     %% OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS
+    
+    //     ce = reshape(sum(  (U(edofMat)*KE).*U(edofMat),2  )    ,nely,nelx);
+    
+    UedofMat = zeros(size(edofMat));
+    
+    for (let row = 0; row < UedofMat.length; row++) {
+        for (let col = 0; col < UedofMat[0].length; col++) {
+            UedofMat[row][col] = U[edofMat[row][col] - 1];
+            
+        }
         
     }
     
-}
+    
+    
+    
+    
+    // ce = reshape(sum(  (U(edofMat)*KE).*U(edofMat),2  )    ,nely,nelx);
+    
+    ce=reshape( sum( dotmul(mul(UedofMat,KE),UedofMat) , 2), nely,nelx); // verified with matlab upto this point
+    
+    
+    
+    //     c = sum(sum((Emin+xPhys.^penal*(E0-Emin)).*ce))
+    
+    c= sum( sum(  dotmul(add (Emin, mul( pow(xPhys,penal),E0-Emin ) ) ,ce  ),1 ),2);
 
-
-
-
-
-// ce = reshape(sum(  (U(edofMat)*KE).*U(edofMat),2  )    ,nely,nelx);
-
-ce=reshape( sum( dotmul(mul(UedofMat,KE),UedofMat) , 2), nely,nelx); // verified with matlab upto this point
-
-
-
-//     c = sum(sum((Emin+xPhys.^penal*(E0-Emin)).*ce))
-
-c= sum( sum(  dotmul(add (Emin, mul( pow(xPhys,penal),E0-Emin ) ) ,ce  ),1 ),2);
-
-c=c[0][0]; // converting single element matrix to a number
-
-//     dc = -penal*(E0-Emin)*xPhys.^(penal-1).*ce;
-
-dc =dotmul( mul(-penal*(E0-Emin),pow( xPhys,penal-1)) , ce);
-
-
-//     dv = ones(nely,nelx);
-
-dv=ones(nely,nelx);
-//     %% FILTERING/MODIFICATION OF SENSITIVITIES
-//     if ft == 1
-//         dc(:) = H*(x(:).*dc(:))./Hs./max(1e-3,x(:));
-//     elseif ft == 2
-//         dc(:) = H*(dc(:)./Hs);
-//         dv(:) = H*(dv(:)./Hs);
-//     end
-//     %% OPTIMALITY CRITERIA UPDATE OF DESIGN VARIABLES AND PHYSICAL DENSITIES
-//     l1 = 0; l2 = 1e9; move = 0.2;
-l1 = 0, l2 = 1e9, move = 0.2;
-compliancebox=document.getElementById('compliancebox');
-compliancebox.innerHTML='c = '+c;
-//     while (l2-l1)/(l1+l2) > 1e-3
-whileloopcounter=0;
-
-console.log("Verified upto this line")
-
-while((l2-l1)/(l1+l2)>0.001){
-
-
-//         lmid = 0.5*(l2+l1);
-lmid = 0.5*(l2+l1);
-//         xnew = max(0,max(x-move,min(1,min(x+move,x.*sqrt(-dc./dv/lmid)))));
-
-//  var xnew= min (  add(x,move) , dotmul(x, sqrt( mul(-1/lmid,dotdiv(dc,dv) )   )) )
-xnew= max(0,max(sub(x,move), min( 1, min( add(x,move) , dotmul(x, sqrt( mul(-1/lmid,dotdiv(dc,dv) )) ) ))))
-
-//         if ft == 1
-//             xPhys = xnew;
-//         elseif ft == 2
-//             xPhys(:) = (H*xnew(:))./Hs;
-//         end
-
+    console.log('compliance = '+c)
+    
+    c=c[0][0]; // converting single element matrix to a number
+    
+    //     dc = -penal*(E0-Emin)*xPhys.^(penal-1).*ce;
+    
+    dc =dotmul( mul(-penal*(E0-Emin),pow( xPhys,penal-1)) , ce);
+    
+    
+    //     dv = ones(nely,nelx);
+    
+    dv=ones(nely,nelx);
+    //     %% FILTERING/MODIFICATION OF SENSITIVITIES
+    //     if ft == 1
+    //         dc(:) = H*(x(:).*dc(:))./Hs./max(1e-3,x(:));
+    //     elseif ft == 2
+    //         dc(:) = H*(dc(:)./Hs);
+    //         dv(:) = H*(dv(:)./Hs);
+    //     end
+    //     %% OPTIMALITY CRITERIA UPDATE OF DESIGN VARIABLES AND PHYSICAL DENSITIES
+    //     l1 = 0; l2 = 1e9; move = 0.2;
+    l1 = 0, l2 = 1e9, move = 0.2;
+    compliancebox=document.getElementById('compliancebox');
+    compliancebox.innerHTML='c = '+c;
+    //     while (l2-l1)/(l1+l2) > 1e-3
+    whileloopcounter=0;
+    
+    console.log('x(1,1) ',x[0][0])
+    while((l2-l1)/(l1+l2)>0.001){
+        
+        
+        //         lmid = 0.5*(l2+l1);
+        lmid = 0.5*(l2+l1);
+        //         xnew = max(0,max(x-move,min(1,min(x+move,x.*sqrt(-dc./dv/lmid)))));
+        
+        //  var xnew= min (  add(x,move) , dotmul(x, sqrt( mul(-1/lmid,dotdiv(dc,dv) )   )) )
+        xnew= max(0,max(sub(x,move), min( 1, min( add(x,move) , dotmul(x, sqrt( mul(-1/lmid,dotdiv(dc,dv) )) ) ))))
+        //         if ft == 1
+        //             xPhys = xnew;
+        //         elseif ft == 2
+        //             xPhys(:) = (H*xnew(:))./Hs;
+        //         end
+        
         if (ft == 1){
-            xPhys =[...xnew]; //             xPhys = xnew;
+            xPhys =deepcopy(xnew); //             xPhys = xnew;
         }
         else if (ft == 2){ //             xPhys(:) = (H*xnew(:))./Hs;
             var xPhyscolon = dotdiv(mul(H, colon(xnew)),Hs);
@@ -263,50 +263,59 @@ xnew= max(0,max(sub(x,move), min( 1, min( add(x,move) , dotmul(x, sqrt( mul(-1/l
                     p++;
                 }
             }
+
         }
+        
+        //         if sum(xPhys(:)) > volfrac*nelx*nely, l1 = lmid; else l2 = lmid; end
+        
+        if (sum(colon(xPhys)) > volfrac*nelx*nely){
+            l1 = lmid; 
+        }
+        else{ 
+            l2 = lmid;
+        }
+        
+        // console.log('whileloop counter:'+whileloopcounter+ '  (l2-l1)/(l1+l2) = '+(l2-l1)/(l1+l2))
 
-//         if sum(xPhys(:)) > volfrac*nelx*nely, l1 = lmid; else l2 = lmid; end
-
-if (sum(colon(xPhys)) > volfrac*nelx*nely){
- l1 = lmid; 
-}
-else{ l2 = lmid;
-}
-
-whileloopcounter++;
-if(whileloopcounter>100){
-break;
-}
-
-//     end
-}
-
-//     change = max(abs(xnew(:)-x(:)));
-change = max(transpose(abs( sub(colon(xnew),colon(x))   )))
-//     x = xnew;
-x=xnew;
-//     %% PRINT RESULTS
-//     fprintf(' It.:%5i Obj.:%11.4f Vol.:%7.3f ch.:%7.3f\n',loop,c, ...
-//         mean(xPhys(:)),change);
-console.log('It: ', loop)
-//     %% PLOT DENSITIES
-//     colormap(gray); imagesc(1-xPhys); caxis([0 1]); axis equal; axis off; drawnow;
-// end
-image(sub(1,x));
-loop++;
-console.log('SIMP ',loop,' iteration')
+        whileloopcounter++;
+        if(whileloopcounter>100){
+            break;
+        }
+        
+        //     end
+    }
+    
+    //     change = max(abs(xnew(:)-x(:)));
+    change = max(abs( sub(colon(xnew),colon(x))  )  ,[],1)
+    console.log('change = '+change)
+    //     x = xnew;
+    x=deepcopy(xnew)
+    //     %% PRINT RESULTS
+    //     fprintf(' It.:%5i Obj.:%11.4f Vol.:%7.3f ch.:%7.3f\n',loop,c, ...
+    //         mean(xPhys(:)),change);
+    console.log('It: ', loop)
+    //     %% PLOT DENSITIES
+    //     colormap(gray); imagesc(1-xPhys); caxis([0 1]); axis equal; axis off; drawnow;
+    // end
+    image(sub(1,x));
+    loop++;
+    console.log('SIMP ',loop,' iteration')
 } // end of for loop
 
 
-SIMPloop();
-
-
+for (let loop = 0; loop < 1; loop++) {
+    SIMPloop();
     
+}
 
 
 
-     
-    
+
+
+
+
+
+
 //solver
 // 99 line matlab code
 
