@@ -107,7 +107,6 @@ var SIMP1generation= function(){
     //     OPTIMALITY CRITERIA UPDATE OF DESIGN VARIABLES AND PHYSICAL DENSITIES
     l1 = 0, l2 = 1e9, move = 0.2;
     
-    updateDisplayedValues()
     
     
     whileloopcounter=0;
@@ -152,7 +151,11 @@ var SIMP1generation= function(){
     
     x=deepcopy(xnew)
     image(sub(1,x));
+    updateDisplayedValues()
+
     loop++;
+
+
 } 
 
 
@@ -179,6 +182,7 @@ function updateDisplayedValues(){
 
 function computeAndUpdateCompliance(){
     tic()
+    xPhys=deepcopy(x);
     let temp1=add(mul(pow( transpose(colon(xPhys)), penal),E0-Emin),Emin);
     sK=reshape( mul(colon(KE),temp1), 64*nelx*nely,1); 
     K = sparse(iK,jK,sK,alldofs.length,alldofs.length);
