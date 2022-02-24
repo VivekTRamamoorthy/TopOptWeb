@@ -163,7 +163,7 @@ function updateDisplayedValues(){
     
     let time =toc()
     
-    if (loop==0){
+    if (loop==0 || typeof avgTimePerItr != "number"){
         avgTimePerItr= time
     }else{
         avgTimePerItr = (avgTimePerItr*(loop)+time)/(loop+1)
