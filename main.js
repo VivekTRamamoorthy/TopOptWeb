@@ -151,9 +151,9 @@ var SIMP1generation= function(){
     
     x=deepcopy(xnew)
     image(sub(1,x));
-    updateDisplayedValues()
-
+    
     loop++;
+    updateDisplayedValues()
 
 
 } 
@@ -170,13 +170,13 @@ function updateDisplayedValues(){
     if (loop==0){
         avgTimePerItr= time
     }else{
-        avgTimePerItr = (avgTimePerItr*(loop+1)+time)/(loop+2)
+        avgTimePerItr = (avgTimePerItr*(loop)+time)/(loop+1)
     }
     let timebox=document.getElementById('timeperiteration');
     timebox.innerText='Time per itr. : '+avgTimePerItr.toPrecision(4) + ' s';
     
     let iterationbox=document.getElementById('iterations');
-    iterationbox.innerText='Iterations : '+(loop+1).toString();
+    iterationbox.innerText='Iterations : '+(loop).toString();
 }
 
 
