@@ -6,13 +6,16 @@
 	<style type="text/css" src="index.css">	</style>
 	<!-- IMPORTING EXTERNAL SCRIPTS -->
 	<!-- math.js -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.2.0/math.js" integrity="sha512-SewEag0kt1xsJdbfAXgLyLvYXeAoGEla4M6JSitT6ocJVI+VeUbFXkgrbloNn4cVgq46caRf31un2eoalq6YOw==" crossorigin="anonymous"></script>
+	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.2.0/math.js" integrity="sha512-SewEag0kt1xsJdbfAXgLyLvYXeAoGEla4M6JSitT6ocJVI+VeUbFXkgrbloNn4cVgq46caRf31un2eoalq6YOw==" crossorigin="anonymous"></script>
+	
 	<!-- stdlib -->
 	<!-- <script type="text/javascript" src="/path/to/@stdlib/dist-math-base-special-flat/build/bundle.min.js"></script> -->
-	<!-- IMPORTING MATLAB FUNCTIONS -->
-	<script src="Matlab.js" type="text/javascript"></script>
-	<script src="image.js" type="text/javascript"></script>
-	<script src="ndarray.js" type="text/javascript"></script>
+
+	<!-- IMPORTING SCRIPTS -->
+	<script defer src="Matlab.js" type="text/javascript"></script>
+	<script defer src="image.js" type="text/javascript"></script>
+	<script defer src="ndarray.js" type="text/javascript"></script>
+
 
 
 </head>
@@ -31,28 +34,12 @@
 
 		<div id='compliancebox' style='background-color: beige;'> c = </div>
 
-		<!-- MAIN FUNCTION -->
-		<script type="text/javascript" src="main.js"></script>
-		<script>
-			var SIMPtoggle=0;
-			var toggleSIMP = function (e){
-				if(SIMPtoggle==0){
-				SIMPtoggle=1;
-				SIMPbutton= document.getElementById("SIMPbutton");
-				SIMPbutton.innerText="SIMP is ON";
-				
-				}
-				else if(SIMPtoggle==1){
-					SIMPtoggle=0;
-				SIMPbutton= document.getElementById("SIMPbutton");
-				SIMPbutton.innerText="SIMP is OFF";
-
-				}
-				return
-			}
-		</script>
 		<button onclick="SIMPloop()">SIMP 1 iteration</button>
 		<button onclick="toggleSIMP()" id="SIMPbutton"> SIMP is OFF </button>
+
+		<!-- SCRIPTS -->
+		<script defer type="text/javascript" src="SIMPcontrols.js"></script>
+		<script defer type="text/javascript" src="main.js"></script>
 
 
 	</body>
