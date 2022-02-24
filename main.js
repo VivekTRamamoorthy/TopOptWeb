@@ -106,7 +106,7 @@ var SIMPloop= function(){
     //     OPTIMALITY CRITERIA UPDATE OF DESIGN VARIABLES AND PHYSICAL DENSITIES
     l1 = 0, l2 = 1e9, move = 0.2;
     compliancebox=document.getElementById('compliancebox');
-    compliancebox.innerHTML='c = '+c;
+    compliancebox.innerHTML='c = '+c.toPrecision(4);
 
     whileloopcounter=0;
     while((l2-l1)/(l1+l2)>0.001){

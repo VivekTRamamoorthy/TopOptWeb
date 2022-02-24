@@ -40,3 +40,8 @@ button {
 .control-panel{
     gap:1rem;
 }
+
+#compliancebox{
+    background-color: beige;
+    padding:0.25rem 3rem ;
+}

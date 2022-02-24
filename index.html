@@ -24,11 +24,17 @@
 	<header>
 		<h1>Structural Topology Optimisation</h1>
 	</header>
+
 	<section>
+		<h2>Introduction</h2>
 		<p>
-			Hi!, In this demo web app, a demo of structural topology optimisation is performed
+			This is an interactive demo of structural topology optimisation on the web. 
 		</p>
-		
+
+	</section>
+
+	<section>
+		<h2>Optimisation panel</h2>
 		<div class="panel flex-row">
 			<!-- INSERTING CANVAS -->
 			<canvas id='shape' ></canvas>
@@ -36,17 +42,11 @@
 			
 			<div class="control-panel flex-column">
 				
-				<div id='compliancebox' class="beige-hightlight"> </div>
+				<div id='compliancebox' class="beige-hightlight"> Compliance</div>
 				
 				<button onclick="SIMPloop()">  SIMP 1 iteration</button>
 				<button onclick="toggleSIMP()" id="SIMPbutton"> SIMP is OFF </button>
 			</div>
-			
-			
-			
-			
-			
-			
 			
 		</div>
 		
