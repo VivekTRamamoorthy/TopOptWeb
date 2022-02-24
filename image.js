@@ -5,6 +5,8 @@ function image(img){
         // LOADING CANVAS
         var canvas =document.querySelector('canvas');
         var c=canvas.getContext('2d');
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
         const nelx=img[0].length;
         const  nely=img.length;
         const pixelWidth=canvas.width/nelx;
