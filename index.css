@@ -1,11 +1,26 @@
 *{
     box-sizing: border-box;
+    margin:0;
 }
 
 body{
     margin:0;
     font-family: Geneva, Helvetica, Tahoma, sans-serif;
-    padding: 0vh 2vw;
+}
+
+header{
+    background-color: hsl(200,50%,20%);
+    color: #ddd;
+    margin:0;
+    padding: 2vh 2vw;
+
+}
+section{
+    padding: 2vh 2vw;
+    max-width: 1000px;
+}
+h2{
+    padding:  0.25rem 0;
 }
 
 canvas {
