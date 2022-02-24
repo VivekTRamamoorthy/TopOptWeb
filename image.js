@@ -25,7 +25,7 @@ function image(img){
                         let xcoord=i*canvas.width/nelx;
                         let ycoord=j*canvas.height/nely;
                         c.fillRect(xcoord,ycoord,pixelWidth,pixelHeight);
-                        c.stroke = 'black 1px';
+                        c.linestyle = '1px red';
                         c.strokeRect(xcoord,ycoord,pixelWidth,pixelHeight);
 
                 }
