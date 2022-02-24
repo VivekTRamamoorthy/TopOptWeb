@@ -28,7 +28,8 @@
 	<section>
 		<h2>Introduction</h2>
 		<p>
-			This is an interactive demo of structural topology optimisation on the web. 
+			This is an interactive demo of structural topology optimisation on the web. This uses the solid isotropic material with penalisation method. 
+			The procedure here closely follows the 88-line matlab code by <a href="https://doi.org/10.1007/s00158-010-0594-7">Andreassen et al</a>.
 		</p>
 
 	</section>
@@ -60,20 +61,21 @@
 			
 		</div>
 		
-		<p>Above is a sample of a shape</p>
 		
 	</section>
 
 	<section>
 		<h2>Instructions</h2>
 		<ul>
-			<li> <code>SIMP 1 iteration</code> computes one iteration of SIMP, displays the shape and the compliance value
+			<li> Use the buttons to run SIMP
 			</li>
 			<li>
-				<code>Run SIMP</code> Computes 
-
+				You may manually change the shape by picking and painting 
+				<code>void</code>,
+				<code>solid</code>,
+				or <code>0.5</code> onto the elements, and run SIMP from that shape.
 			</li>
-			<li></li>
+
 		</ul>
 	</section>
 	
