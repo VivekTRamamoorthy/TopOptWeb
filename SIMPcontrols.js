@@ -83,12 +83,10 @@ canvas.addEventListener('mouseup',()=>{
 })
 canvas.addEventListener('mousemove',(event)=>{
     if(mouseDownIndicator){
-    // console.log(event)
     let mousex=event.layerX
     let mousey=event.layerY
     let col = Math.floor(mousex/canvas.clientWidth*nelx);
     let row = Math.floor((mousey/canvas.clientHeight)*nely);
-    // console.log(mousex,canvas.width,mousey,canvas.height,row,col)
 
     x[row][col]=designVariableToPaint;
     image(sub(1,x))
@@ -96,31 +94,23 @@ canvas.addEventListener('mousemove',(event)=>{
 })
 
 canvas.addEventListener('touchmove',(event)=>{
-    console.log(event)
     event.preventDefault()
-    // console.log(event)
     let rect = canvas.getBoundingClientRect();
     let mousex=event.touches[0].clientX-rect.left;
     let mousey=event.touches[0].clientY-rect.top;
     let col = Math.floor(mousex/canvas.clientWidth*nelx);
     let row = Math.floor((mousey/canvas.clientHeight)*nely);
-    console.log(event.target.offsetHeight)
-    console.log(mousex,canvas.width,mousey,canvas.height,row,col)
 
     x[row][col]=designVariableToPaint;
     image(sub(1,x))
 })
 canvas.addEventListener('touchstart',(event)=>{
-    console.log(event)
     event.preventDefault()
-    // console.log(event)
     let rect = canvas.getBoundingClientRect();
     let mousex=event.touches[0].clientX-rect.left;
     let mousey=event.touches[0].clientY-rect.top;
     let col = Math.floor(mousex/canvas.clientWidth*nelx);
     let row = Math.floor((mousey/canvas.clientHeight)*nely);
-    console.log(event.target.offsetHeight)
-    console.log(mousex,canvas.width,mousey,canvas.height,row,col)
 
     x[row][col]=designVariableToPaint;
     image(sub(1,x))

@@ -1,21 +1,17 @@
-// This function computes 
-
-// SAMPLE SHAPE
-
+// This file is part of a topology optimisation in web project at https://VivekTRamamoorthy.github.io/TopOptWeb
+// Author: Vivek T R
+// MIT License 2022
 
 var nelx=15,nely=15, volfrac=0.5,penal=2,rmin=1,ft=2;
 var x=mul(volfrac,ones(nelx,nely))
 image(x);
 
-// %% MATERIAL PROPERTIES
-// E0 = 1;
-// Emin = 1e-9;
-// nu = 0.3;
+// MATERIAL PROPERTIES
 const E0 = 1;
 const Emin = 1e-9;
 const nu = 0.3;
 
-// %% PREPARE FINITE ELEMENT ANALYSIS
+// PREPARE FINITE ELEMENT ANALYSIS
 const A11 = [[12, 3, -6, -3], [3, 12, 3, 0], [-6, 3, 12, -3], [-3, 0, -3, 12]];
 const A12 = [[-6, -3, 0, 3],[ -3, -6, -3, -6],[ 0, -3, -6, 3],[ 3 ,-6 ,3 ,-6]];
 const B11 = [[-4, 3, -2, 9],[ 3, -4, -9, 4],[ -2, -9, -4, -3],[ 9, 4, -3 ,-4]];
@@ -23,7 +19,7 @@ const B12 = [[ 2, -3, 4, -9],[ -3, 2, 9, -2],[ 4, 9 ,2 ,3],[ -9, -2, 3, 2]];
 
 let temp1 = concatCols(concatRows(A11,A12),concatRows(transpose(A12),A11));
 let temp2= concatCols(concatRows(B11,B12),concatRows(transpose(B12),B11));
-var KE=mul(1/(1-nu**2)/24,  add(temp1,mul(temp2,nu))  );
+var KE = mul(1/(1-nu**2)/24,  add(temp1,mul(temp2,nu))  );
 
 const nodenrs = reshape([range(1,(1+nelx)*(1+nely))],1+nely,1+nelx )
 
@@ -57,7 +53,7 @@ var Hs=ones(nelx*nely,1);
 
 
 // %% INITIALIZE ITERATION
-x=repmat([[volfrac]],nely,nelx); // the double square bracket is because repmat first argument must be a matrix
+x=repmat([[volfrac]],nely,nelx); // the double square bracket is because repmat's first argument must be a matrix
 
 var xPhys=deepcopy(x);
 var loop=0;
@@ -73,6 +69,7 @@ var SIMP1generation= function(){
     tic()
     
     console.log('It: ', loop)
+
     //     FE-ANALYSIS
     let temp1=add(mul(pow( transpose(colon(xPhys)), penal),E0-Emin),Emin);
     sK=reshape( mul(colon(KE),temp1), 64*nelx*nely,1); 
@@ -100,7 +97,7 @@ var SIMP1generation= function(){
     ce=reshape( sum( dotmul(mul(UedofMat,KE),UedofMat) , 2), nely,nelx); // verified with matlab upto this point
     c= sum( sum(  dotmul(add (Emin, mul( pow(xPhys,penal),E0-Emin ) ) ,ce  ),1 ),2);
     console.log('compliance = '+c)
-    c=c[0][0]; // converting single element matrix to a number
+    c=c[0][0]; // converting 1x1 matrix to a number
     dc =dotmul( mul(-penal*(E0-Emin),pow( xPhys,penal-1)) , ce);
     dv=ones(nely,nelx);
     
@@ -115,9 +112,9 @@ var SIMP1generation= function(){
         xnew= max(0,max(sub(x,move), min( 1, min( add(x,move) , dotmul(x, sqrt( mul(-1/lmid,dotdiv(dc,dv) )) ) ))))
         
         if (ft == 1){
-            xPhys =deepcopy(xnew); //             xPhys = xnew;
+            xPhys =deepcopy(xnew); 
         }
-        else if (ft == 2){ //             xPhys(:) = (H*xnew(:))./Hs;
+        else if (ft == 2){ 
             var xPhyscolon = dotdiv(mul(H, colon(xnew)),Hs);
             
             let p=0;
@@ -129,7 +126,6 @@ var SIMP1generation= function(){
                     p++;
                 }
             }
-            
         }
         
         if (sum(colon(xPhys)) > volfrac*nelx*nely){ 
@@ -199,7 +195,7 @@ function computeAndUpdateCompliance(){
     }
     U=transpose(U);
     
-    //     %% OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS
+    // OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS
     UedofMat = zeros(size(edofMat));
     for (let row = 0; row < UedofMat.length; row++) {
         for (let col = 0; col < UedofMat[0].length; col++) {
@@ -209,7 +205,7 @@ function computeAndUpdateCompliance(){
     ce=reshape( sum( dotmul(mul(UedofMat,KE),UedofMat) , 2), nely,nelx); // verified with matlab upto this point
     c= sum( sum(  dotmul(add (Emin, mul( pow(xPhys,penal),E0-Emin ) ) ,ce  ),1 ),2);
     console.log('compliance = '+c)
-    c=c[0][0]; // converting single element matrix to a number
+    c=c[0][0]; 
     dc =dotmul( mul(-penal*(E0-Emin),pow( xPhys,penal-1)) , ce);
     dv=ones(nely,nelx);
     
@@ -234,8 +230,7 @@ function SIMPreset(){
     
     
     // %% INITIALIZE ITERATION
-    x=repmat([[volfrac]],nely,nelx); // the double square bracket is because repmat first argument must be a matrix
-    
+    x=repmat([[volfrac]],nely,nelx); 
     xPhys=deepcopy(x);
     loop=0;
     change=1;

@@ -1,7 +1,4 @@
-
-// This is a toolbox which simplifies development by allowing matlab like syntax in vanilla Javascript. 
-// These functions are meant for syntax simplification rather than performance.
-// Use equivalent typed code for speed.
+// This file is part of https://www.github.com/VivekTRamamoorthy/MatlabJS
 // BASIC MATLAB  FUNCTIONS
 
 
@@ -13,7 +10,6 @@ var complexToggle=0; // doesn't use complex interpretations
 var clc=function(){console.clear()};
 
 var ticTime;
-
 
 var tic= function(){
     const d = new Date();
@@ -579,22 +575,6 @@ var colon=function(K){
     return Kcolon;
 }
 
-
-
-
-//
-//
-//
-//
-//
-//
-//
-// END OF BASIC FUNCTIONS
-
-
-
-
-
 // UNIVERSAL FUNCTIONS ADD, MUL, DIV and SUB, POW,
 
 class cx {
@@ -981,94 +961,3 @@ var deepcopy = function(A){
 
 var disp=display;
 var linspace=range;
-
-
-
-// module.exports ={tic, toc,  isfield, size, setdiff, min, max ,find, sort, abs, range,
-// pool, ones, zeros, display ,ndarray, ops, mldivide ,imshow, array2ndarray, ndarray2array, concatCols, concatRows,
-// cx, add, sub, mul, div, pow }
-
-
-// MATLAB	JavaScript	Notes http://scijs.net/packages/#scijs/scijs-ndarray-for-matlab-users
-// ndims(a)	a.dimension	get the number of dimensions of a
-// numel(a)	a.size	get the number of elements of an arary
-// size(a)	a.shape	get the size of the array
-// size(a,n)	a.shape[n-1]	get the number of elements of the n-th dimension of array a
-// [1 2 3; 4 5 6 ]	ndarray([1,2,3,4,5,6],[2,3])	2×3 matrix literal (using Array type)
-// ndarray(new Float64Array([1,2,3,4,5,6]),[2,3])	2×3 matrix literal (using 64-bit typed array)	
-// pack([[1,2,3],[4,5,6]])	2×3 matrix literal from nested array	
-// a(end)	a.get(a.shape[0]-1)	access last element in the 1×n matrix a
-// a(2, 5)	a.get(1, 4)	access element in second row, fifth column
-// a(2, :)	a.pick(1, null)	entire second row of a
-// a(1:5, :)	a.hi(5, null)	the first five rows of a
-// a(end-4:end, :)	a.lo(a.shape[0]-5, null)	the last five rows of a
-// a(1:3, 5:9)	a.hi(3, 9).lo(0, 4)	rows one to three and columns five to nine of a
-// a([2, 4, 5], [1, 3])		rows 2, 4, and 5 and columns 1 and 3.
-// a(3:2:21, :)	a.hi(21, null).lo(2, null).step(2, 1)	every other row of a, starting with the third and going to the twenty-first
-// a(1:2:end, :)	a.step(2, 1)	every other row of a, starting with the first
-// a(end:-1:1, :) or flipup(a)	a.step(-1, 1)	a with rows in reverse order
-// a([1:end 1], :)		a with copy of the first rows appended to the end
-// a.'	a.transpose(1, 0)	transpose of a
-// a'		conjugate transpose of a
-// c = a * b	gemm(c, a, b)	matrix multiply
-// c = a + b	ops.add(c, a, b)	matrix addition
-// c = a + 2	ops.adds(c, a, 2)	matrix + scalar addition
-// a += b (not available in MATLAB)	ops.addeq(a, b)	in-place matrix addition
-// c = a .* b	ops.mul(c, a, b)	element-wise multiply
-// a = a .* b	ops.muleq(a, b)	element-wise multiply (in-place)
-// c = a ./ b	ops.div(c, a, b)	element-wise division
-// a = a ./ b	ops.diveq(a, b)	element-wise division (in-place)
-// a.^3	ops.pows(a, 3)	element-wise scalar exponentiation
-// (a>0.5)		matrix whose i,jth element is (a_ij > 0.5)
-// find(a>0.5)		find the indices where (a > 0.5)
-// a(:, find(v>0.5))		extract the columns of a where vector v > 0.5
-// a(a<0.5)=0		a with elements less than 0.5 zeroed out
-// a .* (a>0.5)		a with elements less than 0.5 zeroed out
-// a(:) = 3	ops.assigns(a, 3)	set all values to the same scalar value
-// y = x	y =pool.clone(x)	clone by value
-// y = x(2, :)	y = x.pick(1, null)	slices are by reference
-// 1:10		create an increasing vector
-// 0:9		create an increasing vector
-// zeros(3, 4)	pool.zeros([3, 4], 'float64')	3×4 rand-2 array full of 64-bit floating point zeros
-// zeros(3, 4, 5)	pool.zeros([3, 4, 5], 'float64')	3×4×5 rank-3 array full of 64-bit floating point zeros
-// ones(3, 4)	pool.ones([3, 4], 'float64')	3×4 rank-2 array full of 64-bit floating point ones
-// eye(3)	pool.eye([3, 3], 'float64')	3×3 identity matrix with 64-bit floating point precision
-// diag(a)	diag(a)	vector of diagonal elements of a (returns diagonal by reference)
-// diag(a, 0)	b =pool.zeros(a.shape)
-// ops.assign(diag(b),diag(a))	square diagonal matrix whose nonzero values are the elements of a
-// rand(3, 4)	fill(pool.zeros([3, 4]), Math.random)	random 3×4 matrix
-// linspace(1, 3, 4)	linspace(1, 3, 4)	4 equally spaced samples between 1 and 3, inclusive
-// [x, y] = meshgrid(0:8, 0:5)		two 2D arrays: one of x values, one of y values
-// [x, y] = meshgrid([1, 2, 4], [2, 4, 5])		
-// repmat(a, m, n)	tile(a, [m, n])	create m×n copies of a
-// [a b]	concatCols([a, b])	concatenate columns of a and b
-// [a; b]	concatRows([a, b])	concatenate rows of a and b
-// max(max(a))		maximum element of a
-// max(a)	ops.max(a)	maximum element in a
-// norm(v)	ops.norm2(v)	L2 norm of vector v
-// c = a & b	ops.band(c, a, b)	element-by-element AND operator
-// c = a	b	ops.bor(c, a, b)	element-by-element OR operator
-// inv(a)		inverse of square matrix a
-// pinv(a)		pseudo-inverse of matrix a
-// rank(a)		rank of matrix a
-// a\b	lup(a, a, P)
-// solve(a, a, P, b)	solution of a x = b for x
-// b/a		solution of x a = b for x
-// chol(a)	chol(a, L)	cholesky factorization of matrix
-// [V, D] = eig(a)		eigenvalues and eigenvectors of a
-// [V, D] = eig(a, b)		eigenvalues and eigenvectors of a, b
-// [Q, R, P] = qr(a, 0)	qr.factor(A, d)
-// qr.constructQ(A, Q)	QR decomposition. (Depending on the use, you can likely use Q without constructing explicitly. See documentation.)
-// [L, U, P] = lu(a)	lup(A, L, P)	LU decomposition
-// fft(a)	fft(1, ar, ai)	Fourier transform of a. Javascript does not have a complex type so real and imaginary parts must be passed separately.
-// ifft(a)	fft(-1, ar, ai)	inverse Fourier transform of a
-// [b, I] = sortrows(a, i)	sort(a)	sort the rows of the matrix
-// sort(a.transpose(1, 0))	sort the column of the matrix	
-// regress(y, X)	qr.factor( A, d );
-// qr.solve( A, d, y );	multilinear regression
-// decimate(x, q)	resample(output, input)	downsample with low-pass filtering (resample downsamples by a factor of two)
-// unique		
-// squeeze(a)	squeeze(a)	Remove singleton dimensions of a
-
-
-
