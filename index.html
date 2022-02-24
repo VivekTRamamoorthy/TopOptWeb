@@ -42,16 +42,39 @@
 			
 			<div class="control-panel flex-column">
 				
-				<div id='compliancebox' class="beige-hightlight"> Compliance</div>
+				<div id='compliancebox' class="display-value-box"> Compliance: unknown</div>
+				<div id='iterations' class="display-value-box" > Iterations: 0</div>
+				<div id='timeperiteration' class="display-value-box" > Time per iteration: unknown</div>
 				
-				<button onclick="SIMPloop()">  SIMP 1 iteration</button>
-				<button onclick="toggleSIMP()" id="SIMPbutton"> SIMP is OFF </button>
+				<button onclick="computeAndUpdateCompliance()">Compute Compliance</button>
+				<button onclick="SIMP1generation()">SIMP 1 iteration</button>
+				<button onclick="toggleSIMP()" id="SIMPbutton">Keep running</button>
+				<div class="display-value-box" > Pick and paint: </div>
+				<div class="flex-row">
+					<div class="box white" id="whitebox"></div> void
+					<div class="box black" id="blackbox"></div> solid
+					<div class="box gray ispicked" id="graybox"></div> 0.5
+				</div>
+				<button onclick="SIMPreset()">Reset</button>
 			</div>
 			
 		</div>
 		
 		<p>Above is a sample of a shape</p>
 		
+	</section>
+
+	<section>
+		<h2>Instructions</h2>
+		<ul>
+			<li> <code>SIMP 1 iteration</code> computes one iteration of SIMP, displays the shape and the compliance value
+			</li>
+			<li>
+				<code>Run SIMP</code> Computes 
+
+			</li>
+			<li></li>
+		</ul>
 	</section>
 	
 	<footer>

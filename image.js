@@ -3,14 +3,14 @@
 function image(img){
 
         // LOADING CANVAS
-        var canvas =document.querySelector('canvas');
-        var c=canvas.getContext('2d');
+        let canvas =document.querySelector('canvas');
+        let c=canvas.getContext('2d');
         canvas.width = canvas.clientWidth;
         canvas.height = canvas.clientHeight;
-        const nelx=img[0].length;
-        const  nely=img.length;
-        const pixelWidth=canvas.width/nelx;
-        const pixelHeight=canvas.height/nely; 
+        let nelx=img[0].length;
+        let nely=img.length;
+        let pixelWidth=canvas.width/nelx;
+        let pixelHeight=canvas.height/nely; 
         // PLOT SETTINGS
         c.lineWidth=1;
         c.font = "30px Arial ";
@@ -27,7 +27,6 @@ function image(img){
                         let xcoord=i*canvas.width/nelx;
                         let ycoord=j*canvas.height/nely;
                         c.fillRect(xcoord,ycoord,pixelWidth,pixelHeight);
-                        c.linestyle = '1px red';
                         c.strokeRect(xcoord,ycoord,pixelWidth,pixelHeight);
 
                 }

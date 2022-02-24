@@ -13,6 +13,7 @@ canvas {
     height: min(50vh, 50vw) ;
     width: min(50vh, 50vw) ;
     background-color: rgba(0,0,0,0.1);
+    cursor: grabbing;
 }
 
 button {
@@ -26,6 +27,7 @@ button {
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
+    gap:.5rem;
 }
 .panel{
     justify-content: space-evenly;
@@ -36,12 +38,40 @@ button {
     align-items: center;
     text-align: center;
     justify-content: center;
-}
-.control-panel{
     gap:1rem;
+}
+
+
+.display-value-box{
+    padding:0.25rem 3rem ;
+
 }
 
 #compliancebox{
     background-color: beige;
-    padding:0.25rem 3rem ;
+
 }
+.box{
+    height:1.5rem;
+    width: 1.5rem;
+    border: 1px solid black;
+    cursor: grab;
+
+}
+
+.white{
+    background-color: white;
+
+}
+.black{
+    background-color: black;
+}
+.gray{
+    background-color: gray;
+}
+
+.ispicked{
+    border:2px solid red;
+}
+
+
