@@ -1,10 +1,42 @@
+*{
+    box-sizing: border-box;
+}
+
 body{
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin:0;
+    font-family: Geneva, Helvetica, Tahoma, sans-serif;
+    padding: 2vw 2vh;
 }
 
 canvas {
     border: 2px solid black;
-    height: 50% ;
-    width: 50% ;
+    height: min(50vh, 50vw) ;
+    width: min(50vh, 50vw) ;
     background-color: rgba(0,0,0,0.1);
+}
+
+button {
+    font: inherit;
+    min-width: 10rem;
+}
+
+.flex-row{
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+.panel{
+    justify-content: space-evenly;
+}
+.flex-column{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}
+.control-panel{
+    gap:1rem;
 }

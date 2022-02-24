@@ -1,59 +1,79 @@
 <!DOCTYPE html>
 <html>
-	
+
 <head>
 	<title>TopOpt</title>
-	<style type="text/css" src="index.css">	</style>
+	
+	<link rel="stylesheet" href="index.css">
 	<!-- IMPORTING EXTERNAL SCRIPTS -->
 	<!-- math.js -->
 	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.2.0/math.js" integrity="sha512-SewEag0kt1xsJdbfAXgLyLvYXeAoGEla4M6JSitT6ocJVI+VeUbFXkgrbloNn4cVgq46caRf31un2eoalq6YOw==" crossorigin="anonymous"></script>
 	
 	<!-- stdlib -->
 	<!-- <script type="text/javascript" src="/path/to/@stdlib/dist-math-base-special-flat/build/bundle.min.js"></script> -->
-
+	
 	<!-- IMPORTING SCRIPTS -->
 	<script defer src="Matlab.js" type="text/javascript"></script>
 	<script defer src="image.js" type="text/javascript"></script>
 	<script defer src="ndarray.js" type="text/javascript"></script>
-
-
-
+	
+	
+	
 </head>
 <body>
-	<h1>Structural Topology Optimisation</h1>
-	<p>
-		Hi!, In this demo web app, a demo of structural topology optimisation is performed
-	</p>
-	<!-- INSERTING CANVAS -->
-	<canvas id='shape' style='width:300px;height:300px'></canvas>
-
-	
-
-
+	<header>
+		<h1>Structural Topology Optimisation</h1>
+	</header>
+	<section>
+		<p>
+			Hi!, In this demo web app, a demo of structural topology optimisation is performed
+		</p>
+		
+		<div class="panel flex-row">
+			<!-- INSERTING CANVAS -->
+			<canvas id='shape' ></canvas>
+			<!-- CONTROL PANEL -->
+			
+			<div class="control-panel flex-column">
+				
+				<div id='compliancebox' class="beige-hightlight"> </div>
+				
+				<button onclick="SIMPloop()">  SIMP 1 iteration</button>
+				<button onclick="toggleSIMP()" id="SIMPbutton"> SIMP is OFF </button>
+			</div>
+			
+			
+			
+			
+			
+			
+			
+		</div>
+		
 		<p>Above is a sample of a shape</p>
+		
+	</section>
+	
+	<footer>
+		
+	</footer>
+	<!-- SCRIPTS -->
+	<script defer type="text/javascript" src="SIMPcontrols.js"></script>
+	<script defer type="text/javascript" src="main.js"></script>
+	
+	
+</body>
+</html>
 
-		<div id='compliancebox' style='background-color: beige;'> c = </div>
-
-		<button onclick="SIMPloop()">SIMP 1 iteration</button>
-		<button onclick="toggleSIMP()" id="SIMPbutton"> SIMP is OFF </button>
-
-		<!-- SCRIPTS -->
-		<script defer type="text/javascript" src="SIMPcontrols.js"></script>
-		<script defer type="text/javascript" src="main.js"></script>
 
 
-	</body>
-	</html>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
