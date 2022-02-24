@@ -5,13 +5,13 @@
 body{
     margin:0;
     font-family: Geneva, Helvetica, Tahoma, sans-serif;
-    padding: 2vw 2vh;
+    padding: 0vh 2vw;
 }
 
 canvas {
     border: 2px solid black;
-    height: min(50vh, 50vw) ;
-    width: min(50vh, 50vw) ;
+    height: max(400px,min(50vh, 50vw)) ;
+    width: max(400px, min(50vh, 50vw)) ;
     background-color: rgba(0,0,0,0.1);
     cursor: grabbing;
 }
