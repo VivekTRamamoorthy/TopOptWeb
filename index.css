@@ -45,6 +45,12 @@ button {
     gap:.5rem;
 }
 .panel{
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap:.5rem;
     justify-content: space-evenly;
 }
 .flex-column{
@@ -90,3 +96,9 @@ button {
 }
 
 
+
+@media screen and (max-width: 768px){
+    .panel{
+        flex-direction: column;
+    }
+}
