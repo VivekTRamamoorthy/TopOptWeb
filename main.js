@@ -2,7 +2,7 @@
 // Author: Vivek T R
 // MIT License 2022
 
-var nelx=15,nely=15, volfrac=0.5,penal=2,rmin=1,ft=2;
+var nelx=16,nely=16, volfrac=0.5,penal=3,rmin=3,ft=2;
 var x=mul(volfrac,ones(nelx,nely))
 image(x);
 

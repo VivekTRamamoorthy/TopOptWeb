@@ -6,14 +6,14 @@ const toggleSIMP = function (e){
     if(SIMPisRunning){
         SIMPisRunning=false;
     SIMPbutton= document.getElementById("SIMPbutton");
-    SIMPbutton.innerText="Keep running";
+    SIMPbutton.innerHTML=`<i class="fa fa-play" aria-hidden="true"></i>`;
 
     
     }
     else {
     SIMPisRunning=true;
     SIMPbutton= document.getElementById("SIMPbutton");
-    SIMPbutton.innerText="Stop";
+    SIMPbutton.innerHTML=`<i class="fa fa-stop" aria-hidden="true"></i>`;
     SIMPupdateloop()
 
     }

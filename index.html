@@ -4,10 +4,16 @@
 <head>
 	<title>TopOpt</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+	integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<link rel="stylesheet" href="index.css">
+	
 	<!-- IMPORTING EXTERNAL SCRIPTS -->
 	<!-- math.js -->
-	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.2.0/math.js" integrity="sha512-SewEag0kt1xsJdbfAXgLyLvYXeAoGEla4M6JSitT6ocJVI+VeUbFXkgrbloNn4cVgq46caRf31un2eoalq6YOw==" crossorigin="anonymous"></script>
+	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.2.0/math.js"
+	integrity="sha512-SewEag0kt1xsJdbfAXgLyLvYXeAoGEla4M6JSitT6ocJVI+VeUbFXkgrbloNn4cVgq46caRf31un2eoalq6YOw=="
+	crossorigin="anonymous"></script>
 	
 	<!-- stdlib -->
 	<!-- <script type="text/javascript" src="/path/to/@stdlib/dist-math-base-special-flat/build/bundle.min.js"></script> -->
@@ -15,72 +21,103 @@
 	<!-- IMPORTING SCRIPTS -->
 	<script defer src="Matlab.js" type="text/javascript"></script>
 	<script defer src="image.js" type="text/javascript"></script>
-	<script defer src="ndarray.js" type="text/javascript"></script>
+	<!-- <script defer src="ndarray.js" type="text/javascript"></script> -->
+	<script defer src="mldivide.js" type="text/javascript"></script>
 	
 	
 	
 </head>
+
 <body>
 	<header>
 		<h1>Structural Topology Optimisation</h1>
 	</header>
-
+	
 	<section>
+		<!-- <p>
+			This is an interactive demo of structural topology optimisation on the web. This uses the solid isotropic
+			material with penalisation (SIMP) method.
+			The procedure here closely follows the 88-line matlab code by <a
+			href="https://doi.org/10.1007/s00158-010-0594-7">Andreassen et al</a>.
+		</p> -->
 		<p>
-			This is an interactive demo of structural topology optimisation on the web. This uses the solid isotropic material with penalisation (SIMP) method. 
-			The procedure here closely follows the 88-line matlab code by <a href="https://doi.org/10.1007/s00158-010-0594-7">Andreassen et al</a>.
+			Automated design of a beam supported at one end with a downward force applied on the other.
 		</p>
-
+		
 	</section>
-
+	
 	<section>
 		<div class="panel">
 			<!-- INSERTING CANVAS -->
-			<canvas id='shape' ></canvas>
+			<canvas id='shape'></canvas>
 			<!-- CONTROL PANEL -->
 			
 			<div class="control-panel flex-column">
 				
 				<div id='compliancebox' class="display-value-box"> Compliance: unknown</div>
-				<div id='iterations' class="display-value-box" > Iterations: 0</div>
-				<div id='timeperiteration' class="display-value-box" > Time per iteration: unknown</div>
-				
-				<button onclick="computeAndUpdateCompliance()">Compute Compliance</button>
-				<button onclick="SIMP1generation()">SIMP 1 iteration</button>
-				<button onclick="toggleSIMP()" id="SIMPbutton">Keep running</button>
-				<div class="display-value-box" > Pick and paint: </div>
+				<div id='iterations' class="display-value-box"> Iterations: 0</div>
+				<div id='timeperiteration' class="display-value-box"> Time per iteration: unknown</div>
+				<div class="flex-row">
+					
+					<button class="tooltip" onclick="toggleSIMP()" id="SIMPbutton">
+						<i class="fa fa-play" aria-hidden="true"></i>
+						<!-- <p>
+							Keep running
+						</p> -->
+						<span class="tooltiptext">Run SIMP</span>
+					</button>
+					<button class="tooltip" onclick="SIMP1generation()">
+						<i class="fa fa-step-forward" aria-hidden="true"></i>
+						<!-- <p>
+							SIMP 1 iteration
+						</p> -->
+						<span class="tooltiptext">SIMP 1 generation</span>
+					</button>
+					<button class="tooltip" onclick="computeAndUpdateCompliance()">
+						<i class="fa fa-calculator"
+						aria-hidden="true"></i>
+						<span class="tooltiptext">Compute compliance for current shape</span>
+
+					</button>
+					<button class="tooltip" onclick="SIMPreset()">
+						<i class="fa fa-repeat" aria-hidden="true"></i>
+						<span class="tooltiptext">Reset shape</span>
+
+					</button>
+				</div>
+				<div class="display-value-box"> Pick and paint: </div>
 				<div class="flex-row">
 					<div class="box white" id="whitebox"></div> void
 					<div class="box black" id="blackbox"></div> solid
 					<div class="box gray ispicked" id="graybox"></div> 0.5
 				</div>
-				<button onclick="SIMPreset()">Reset</button>
 			</div>
 			
 		</div>
 		
 		
 	</section>
-
+	
 	<section>
 		<ul>
-			<li> Use the buttons to run SIMP
+			<li> Use the buttons to run the <a
+				href="https://doi.org/10.1007/s00158-010-0594-7">SIMP</a> algorithm for topology optimisation
 			</li>
 			<li>
-				You may manually change the shape by picking and painting 
-				<code>void</code>,
-				<code>solid</code>,
-				or <code>0.5</code> onto the elements, and run SIMP from that shape.
+				Modify the shape with pick and paint buttons.
 			</li>
-			<br>
-			<p>MIT License 2022 <br>Vivek T Ramamoorthy<br> <a href="https://no2noise.eu">No2Noise MSCA ITN</a>  | <a href="https://www.nottingham.ac.uk">University of Nottingham</a>  | <a href="https://www.matelys.com">Matelys Research Lab </a>  </p>
 		</ul>
-	</section>
-	<section>
-		
 	</section>
 	
 	<footer>
+		<div class="flex-row no-wrap">
+			MIT License 2022 - Vivek T Ramamoorthy
+		</div>
+		<div class="flex-row no-wrap">
+			<a href="https://no2noise.eu">No2Noise</a>   
+			<a href="https://www.nottingham.ac.uk">UoN</a> 
+			<a href="https://www.matelys.com">Matelys</a> 
+		</div>
 		
 	</footer>
 	<!-- SCRIPTS -->
@@ -89,17 +126,5 @@
 	
 	
 </body>
+
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-

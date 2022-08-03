@@ -1,104 +1,153 @@
-*{
+* {
     box-sizing: border-box;
-    margin:0;
+    margin: 0;
 }
 
-body{
-    margin:0;
+body {
+    margin: 0;
     font-family: Geneva, Helvetica, Tahoma, sans-serif;
+    height:100vh;
 }
 
-header{
-    background-color: hsl(200,50%,20%);
+header {
+    background-color: hsl(200, 50%, 20%);
     color: #ddd;
-    margin:0;
+    margin: 0;
     padding: 2vh 2vw;
 
 }
-section{
+
+section {
     padding: 2vh 2vw;
     max-width: 1000px;
 }
-h2{
-    padding:  0.25rem 0;
+
+h2 {
+    padding: 0.25rem 0;
 }
 
 canvas {
-    border: 2px solid black;
-    height: max(400px,min(50vh, 50vw)) ;
-    width: max(400px, min(50vh, 50vw)) ;
-    background-color: rgba(0,0,0,0.1);
+    /* border: 2px solid black; */
+    height: min(50vh, 50vw);
+    width: min(50vh, 50vw);
+    background-color: rgba(0, 0, 0, 0.1);
     cursor: grabbing;
 }
 
 button {
     font: inherit;
-    min-width: 10rem;
+    padding:.5rem;
+    flex-grow: 1;
+    width:4rem;
+    height:4rem;
 }
 
-.flex-row{
-    display:flex;
+.flex-row {
+    display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap:.5rem;
+    gap: .5rem;
 }
-.panel{
-    display:flex;
+.no-wrap{
+    flex-wrap: nowrap;
+}
+.panel {
+    display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap:.5rem;
+    gap: .5rem;
     justify-content: space-evenly;
 }
-.flex-column{
-    display:flex;
+
+.flex-column {
+    display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     justify-content: center;
-    gap:1rem;
+    gap: 1rem;
 }
 
+i.fa {
+    height: 2rem;
+    font-size: 2rem;
+}
 
-.display-value-box{
-    padding:0.25rem 3rem ;
+.display-value-box {
+    padding: 0.25rem 3rem;
 
 }
 
-#compliancebox{
+#compliancebox {
     background-color: beige;
 
 }
-.box{
-    height:1.5rem;
-    width: 1.5rem;
+
+.box {
+    height: 3rem;
+    width: 3rem;
     border: 1px solid black;
     cursor: grab;
 
 }
 
-.white{
+.white {
     background-color: white;
 
 }
-.black{
+
+.black {
     background-color: black;
 }
-.gray{
+
+.gray {
     background-color: gray;
 }
 
-.ispicked{
-    border:2px solid red;
+.ispicked {
+    border: 4px solid red;
 }
 
-
-
-@media screen and (max-width: 768px){
-    .panel{
+@media screen and (max-width: 768px) {
+    .panel {
         flex-direction: column;
     }
 }
+.tooltip {
+    position: relative;
+    display: inline-block;
+    /* border-bottom: 1px dotted #222; */
+  }
+  
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #333;
+    color: #eee;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: -5px;
+    left: 105%;
+  }
+  
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
+
+  footer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    bottom:0;
+    text-align: center;
+    flex-direction: column;
+  }
