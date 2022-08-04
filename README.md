@@ -1,23 +1,24 @@
 # Structural topology optimisation code in a web page
 
-Use the app at [VivekTRamamoorthy.github.io/TopOptWeb](https://VivekTRamamoorthy.github.io/TopOptWeb).
+The repository contains the source of a web app for topology optimisation. This app written in JavaScript performs compliance minimisation topology optimisation in the web browser to solve a simple beam fixed at one end with a load at the other. The app is published using GitHub pages at [VivekTRamamoorthy.github.io/TopOptWeb](https://VivekTRamamoorthy.github.io/TopOptWeb).
 
-- Click on the buttons to keep running SIMP or to run one iteration at a time.
-- Pause and edit shapes by using paint tool which allows filling a specific finite element with void or solid or an intermediate material between solid and void.
+## Instructions to use the app:
+- Click on the `play` button to run SIMP continuously or the `step` button to run one iteration at a time.
+- Edit the shape by picking and painting solid, void or intermediate materials. 
 
 ## Algorithm
 
-This app written in JavaScript performs compliance minimisation topology optimisation in the web browser to solve a simple beam fixed at one end with a load at the other. The algorithm used is the popular solid-isotropic material with penalisation method popularised by Ole Sigmund. 
+A Javascript adaptation of the 88-line efficient topology optimization Matlab code by [Andreassen et al.](https://doi.org/10.1007/s00158-010-0594-7)that uses the solid-isotropic-material-with penalization method. There is room for optimising the code. 
 
 ## Paint and erase shapes
-The app allows users to manually edit the shape by paint and erase tools during the algorithm to enforce specific attributes in the final solution. The user can fully control progress of the solution by manual intervention such as to explicitly remove checkerboard patterns. The app also prints compliance for a given shape upon request in the user interface. 
+A unique feature of this web-based topology optimisation app is that it allows users to manually edit the shape during the algorithm. Using the pick and paint panel, the material in an element can be overridden with either solid, void or an intermediate material. While doing so, one can compute the compliance of the structure without running the SIMP algorithm.
 
 ## Mobile friendly
-The app is tested to work well on google Chrome for mobile. 
+Tested on Chrome for mobile. 
 
 ## Dependencies
-MatlabJS
-mathjs
+[MatlabJS](https:://VivekTRamamoorthy.github.io/MatlabJS) 
+[mathjs](https://mathjs.org/)
 
 ## License
 MIT license 
