@@ -42,15 +42,11 @@ const F =temp1;
 var U = zeros(2*(nely+1)*(nelx+1),1);
 
 const fixeddofs = union(range(1,2,2*(nely+1)),2*(nelx+1)*(nely+1));
-
 const alldofs = range(1,2*(nely+1)*(nelx+1));
-
 const freedofs = setdiff(alldofs,fixeddofs);
-
 
 var H=eye(nelx*nely);
 var Hs=ones(nelx*nely,1);
-
 
 // %% INITIALIZE ITERATION
 x=repmat([[volfrac]],nely,nelx); // the double square bracket is because repmat's first argument must be a matrix

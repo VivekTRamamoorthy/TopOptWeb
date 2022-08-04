@@ -166,26 +166,27 @@ var sqrt = function(A){
 }
 
 var setdiff = function(arr1,arr2){
-    let result=[arr1[0]], indices=[1],donotinclude, current;
-    for (let i = 1; i < arr1.length; i++) {
-        current=arr1[i];
-        donotinclude=0;
-        // check to see if the current element exists in the result
-        for (let j = 0; j < result.length; j++) {
-            if(current==result[j]){donotinclude=1; break; }
-        }
-        if(donotinclude==1){break;}
-        // check to see if the current element exists in the array 2
-        for (let j = 0; j < arr2.length; j++) {
-            if(current==arr2[j]){donotinclude=1;break; }
-        }
-        // if(donotinclude==1){break;}
-        // if the element doesn't exist then push to the result and update the index
-        if(donotinclude==0){result.push(current); indices.push(i); }
-    }
-    // return [result,indices] // alternative two output argument result
-    result.sort((a,b)=>a-b);
-    return result
+    // let result=[arr1[0]], indices=[1];
+    // for (let i = 0; i < arr1.length; i++) {
+    //     let current=arr1[i];
+    //     let donotinclude=0;
+    //     // check to see if the current element exists in the result
+    //     for (let j = 0; j < result.length; j++) {
+    //         if(current==result[j]){donotinclude=1; break; }
+    //     }
+    //     if(donotinclude==1){break;}
+    //     // check to see if the current element exists in the array 2
+    //     for (let j = 0; j < arr2.length; j++) {
+    //         if(current==arr2[j]){donotinclude=1;break; }
+    //     }
+    //     // if(donotinclude==1){break;}
+    //     // if the element doesn't exist then push to the result and update the index
+    //     if(donotinclude==0){result.push(current); indices.push(i); }
+    // }
+    // // return [result,indices] // alternative two output argument result
+    // result.sort((a,b)=>a-b);
+    // return result
+   return  arr1.filter(x=> !arr2.includes(x));
 }
 
 var min = function(A,B=[],dim=1){ 
