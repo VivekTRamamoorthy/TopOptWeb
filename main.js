@@ -75,13 +75,14 @@ var SIMP1generation= function(){
     
     // TESTING AN EXAMPLE
     inputF=transpose(Ffree);
-    Ufree=mldivide(transpose(Kfree),inputF[0])
-    U=new Array(alldofs.length).fill().map(x=>0);
+    // Ufree=mldivide(transpose(Kfree),inputF[0])
+    Ufree=linsolve(Kfree,Ffree)
+    U=new Float64Array(alldofs.length);
     for (let i=0;i<freedofs.length; i++)
     {
         U[freedofs[i]-1]=Ufree[i];
     }
-    U=transpose(U);
+    // U=transpose(U);
     
     //     %% OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS
     UedofMat = zeros(size(edofMat));
@@ -219,7 +220,7 @@ function SIMPreset(){
     let temp2= concatCols(concatRows(B11,B12),concatRows(transpose(B12),B11));
     KE=mul(1/(1-nu**2)/24,  add(temp1,mul(temp2,nu))  );
     
-    U = zeros(2*(nely+1)*(nelx+1),1);
+    U = new Float64Array(2*(nely+1)*(nelx+1));//zeros(2*(nely+1)*(nelx+1),1);
     
     H=eye(nelx*nely);
     Hs=ones(nelx*nely,1);
