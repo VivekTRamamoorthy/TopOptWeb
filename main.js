@@ -85,7 +85,7 @@ var SIMP1generation= function(){
     // U=transpose(U);
     
     //     %% OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS
-    UedofMat = zeros(size(edofMat));
+    var UedofMat = zeros(size(edofMat));
     for (let row = 0; row < UedofMat.length; row++) {
         for (let col = 0; col < UedofMat[0].length; col++) {
             UedofMat[row][col] = U[edofMat[row][col] - 1];
@@ -183,22 +183,26 @@ function computeAndUpdateCompliance(){
     Ffree=get(F,freedofs,[1]);
     
     // TESTING AN EXAMPLE
-    inputF=transpose(Ffree);
-    Ufree=mldivide(transpose(Kfree),inputF[0])
-    U=new Array(alldofs.length).fill().map(x=>0);
-    for (let i=0;i<freedofs.length; i++)
-    {
-        U[freedofs[i]-1]=Ufree[i];
-    }
-    U=transpose(U);
-    
-    // OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS
-    UedofMat = zeros(size(edofMat));
-    for (let row = 0; row < UedofMat.length; row++) {
-        for (let col = 0; col < UedofMat[0].length; col++) {
-            UedofMat[row][col] = U[edofMat[row][col] - 1];
+
+        // TESTING AN EXAMPLE
+        inputF=transpose(Ffree);
+        // Ufree=mldivide(transpose(Kfree),inputF[0])
+        Ufree=linsolve(Kfree,Ffree)
+        U=new Float64Array(alldofs.length);
+        for (let i=0;i<freedofs.length; i++)
+        {
+            U[freedofs[i]-1]=Ufree[i];
         }
-    }
+        // U=transpose(U);
+        
+        //     %% OBJECTIVE FUNCTION AND SENSITIVITY ANALYSIS
+        var UedofMat = zeros(size(edofMat));
+        for (let row = 0; row < UedofMat.length; row++) {
+            for (let col = 0; col < UedofMat[0].length; col++) {
+                UedofMat[row][col] = U[edofMat[row][col] - 1];
+            }
+        }
+
     ce=reshape( sum( dotmul(mul(UedofMat,KE),UedofMat) , 2), nely,nelx); // verified with matlab upto this point
     c= sum( sum(  dotmul(add (Emin, mul( pow(xPhys,penal),E0-Emin ) ) ,ce  ),1 ),2);
     console.log('compliance = '+c)
