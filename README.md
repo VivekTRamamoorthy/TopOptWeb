@@ -8,16 +8,17 @@ The repository contains the source of a web app for topology optimisation. This 
 
 ## Algorithm
 
-A Javascript adaptation of the 88-line efficient topology optimization Matlab code by [Andreassen et al.](https://doi.org/10.1007/s00158-010-0594-7)that uses the solid-isotropic-material-with penalization method. There is room for optimising the code. 
+A Javascript adaptation of the 88-line efficient topology optimization Matlab code by [Andreassen et al.](https://doi.org/10.1007/s00158-010-0594-7) which uses the solid-isotropic-material-with penalization method. 
 
 ## Paint and erase shapes
-A unique feature of this web-based topology optimisation app is that it allows users to manually edit the shape during the algorithm. Using the pick and paint panel, the material in an element can be overridden with either solid, void or an intermediate material. While doing so, one can compute the compliance of the structure without running the SIMP algorithm.
+A unique feature of this web-based topology optimisation app is that it allows users to manually edit the shapes during the algorithm. Using the pick and paint panel, the material in an element can be overridden with either solid, void or an intermediate material. While doing so, one can compute the compliance of the structure without running the SIMP algorithm.
 
 ## Mobile friendly
 Tested on Chrome for mobile. 
 
 ## Dependencies
 [MatlabJS](https:://VivekTRamamoorthy.github.io/MatlabJS) 
+
 [mathjs](https://mathjs.org/)
 
 ## License
