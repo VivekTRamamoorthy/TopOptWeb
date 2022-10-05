@@ -2,7 +2,7 @@
 // Author: Vivek T R
 // MIT License 2022
 
-var nelx=16,nely=16, volfrac=0.5,penal=3,rmin=3,ft=2;
+var nelx=16, nely=16, volfrac=0.5, penal=3, rmin=3,ft=2;
 var x=mul(volfrac,ones(nelx,nely))
 image(x);
 
@@ -76,7 +76,7 @@ var SIMP1generation= function(){
     // TESTING AN EXAMPLE
     inputF=transpose(Ffree);
     // Ufree=mldivide(transpose(Kfree),inputF[0])
-    Ufree=linsolve(Kfree,Ffree)
+    Ufree=linsolveSparse(Kfree,Ffree)
     U=new Float64Array(alldofs.length);
     for (let i=0;i<freedofs.length; i++)
     {
