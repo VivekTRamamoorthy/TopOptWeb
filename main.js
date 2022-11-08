@@ -156,7 +156,7 @@ var avgTimePerItr
 
 function updateDisplayedValues(){
     let compliancebox=document.getElementById('compliancebox');
-    compliancebox.innerText='c = '+c.toPrecision(4);
+    compliancebox.innerText='Compliance = '+c.toPrecision(4);
     
     let time =toc()
     
@@ -187,7 +187,7 @@ function computeAndUpdateCompliance(){
         // TESTING AN EXAMPLE
         inputF=transpose(Ffree);
         // Ufree=mldivide(transpose(Kfree),inputF[0])
-        Ufree=linsolve(Kfree,Ffree)
+        Ufree=linsolveSparse(Kfree,Ffree)
         U=new Float64Array(alldofs.length);
         for (let i=0;i<freedofs.length; i++)
         {
