@@ -15,7 +15,7 @@ const MATLABJS_GLOBAL={
     'sum','norm','abs','sqrt','setdiff','min','max','range','concatRows','concatCols','transpose',
     'ones','zeros','rand','randi','randn_bm','randn','diag','triu','display','reshape','get','set',
     'repmat','kron','union','unique','sparse','colon','add','sub','mul','div','pow','dotmul','dotdiv',
-    'deepcopy','copy','disp','linsolve','all','any','map','exp','real','imag','angle','conj',],
+    'deepcopy','copy','disp','linsolve','linsolveSparse','all','any','map','exp','real','imag','angle','conj',],
     classes:['cx'],
     objects:['MATLABJS_GLOBAL','ticTime',],
 }
@@ -1407,7 +1407,17 @@ var linsolve = function (A, B) {
     
 };
 
-
+var linsolveSparse = function(A,b){
+    if(!math){
+        console.error('linsolveSparse function needs mathjs library to work. Include mathjs and try again.');
+        return null;
+    }
+    let sA = math.sparse(A);
+    let sb= math.sparse(b)
+    let lup = math.slu(sA,1,0.001)
+    let x = math.lusolve(lup,sb)
+    return x._data;
+}
 
 try{
     
@@ -1415,7 +1425,7 @@ try{
      sum , norm , abs , sqrt , setdiff , min , max , range , concatRows , concatCols , transpose ,
      ones , zeros , eye, rand , randi , randn_bm , randn , diag , triu , display , reshape , get , set ,
      repmat , kron , union , unique , sparse , colon , add , sub , mul , div , pow , dotmul , dotdiv ,
-     deepcopy , copy , disp , linsolve , all , any , map , exp , real , imag , angle , conj,
+     deepcopy , copy , disp , linsolve , linsolveSparse, all , any , map , exp , real , imag , angle , conj,
       cx, pi,
       MATLABJS_GLOBAL, ticTime };
     // MATLABJS_GLOBAL.listOfFunctions.forEach(func_name => {MATLABJS[func_name]=eval(func_name)})
